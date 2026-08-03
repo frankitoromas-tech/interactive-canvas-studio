@@ -789,3 +789,62 @@ body {
     padding-right: 10px;
   }
 }
+
+/* =========================================================
+   EFECTOS PREMIUM: WASHI TAPE, 3D TILT & SHIMMER BORDERS
+   ========================================================= */
+
+/* Cinta Washi Tape Decorativa */
+.washi-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 90px;
+  height: 24px;
+  background: rgba(254, 205, 211, 0.75);
+  backdrop-filter: blur(2px);
+  border-left: 3px dashed rgba(244, 63, 94, 0.4);
+  border-right: 3px dashed rgba(244, 63, 94, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Shimmer Border Iridiscente */
+.shimmer-border {
+  position: relative;
+  background: linear-gradient(60deg, #f43f5e, #ec4899, #fbbf24, #f43f5e);
+  background-size: 300% 300%;
+  animation: shimmerGradient 6s ease infinite;
+}
+
+@keyframes shimmerGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 3D Tilt Container */
+.tilt-card {
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-card:hover {
+  box-shadow: 0 30px 60px -12px rgba(244, 63, 94, 0.35), 0 18px 36px -18px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de luz dinámica sobre la foto */
+.shine-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+

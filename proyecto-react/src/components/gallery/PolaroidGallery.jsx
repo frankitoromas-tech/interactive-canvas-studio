@@ -1,137 +1,188 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { sound } from '../../utils/soundEffects';
-import { validateImageFile } from '../../utils/security';
+import { validateImageFile, safeStorage } from '../../utils/security';
 
-const DEFAULT_POLAROIDS = [
+const DEFAULT_CATS = [
   {
     id: 1,
     url: '/cats/cat1.png',
-    caption: 'Tú eres mi flor favorita 🌹🐾',
-    rotation: '-3deg',
-    date: '14 Feb'
+    caption: 'Tú eres mi flor más hermosa 🌹',
+    date: 'Para Siempre',
+    rotate: '-2deg'
   },
   {
     id: 2,
     url: '/cats/cat2.png',
-    caption: 'Abrazaditos por siempre 💕✨',
-    rotation: '4deg',
-    date: 'Para Siempre'
+    caption: 'Acurrucados en cada sueño 💕',
+    date: 'Inseparables',
+    rotate: '3deg'
   },
   {
     id: 3,
     url: '/cats/cat3.png',
-    caption: 'Cupido gatito nos flechó 💘',
-    rotation: '-2deg',
-    date: 'Amor Eterno'
+    caption: 'El flechazo más tierno del mundo 💘',
+    date: 'Destino',
+    rotate: '-1.5deg'
   },
   {
     id: 4,
     url: '/cats/cat4.png',
-    caption: 'Una cartita especial para ti 💌',
-    rotation: '3deg',
-    date: 'San Valentín'
+    caption: 'Una cartita llena de ronroneos y amor 💌',
+    date: 'Con Cariño',
+    rotate: '2deg'
   }
 ];
 
 export default function PolaroidGallery() {
-  const [polaroids, setPolaroids] = useState(DEFAULT_POLAROIDS);
+  const [photos, setPhotos] = useState(() => {
+    const saved = safeStorage.getItem('sv_custom_photos');
+    return saved ? JSON.parse(saved) : DEFAULT_CATS;
+  });
+
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [uploadError, setUploadError] = useState('');
+  const [isSlideshow, setIsSlideshow] = useState(false);
+  const [slideshowIdx, setSlideshowIdx] = useState(0);
+  const fileInputRef = useRef(null);
 
-  const handleAddPhoto = (e) => {
-    const file = e.target.files?.[0];
+  // Slideshow automático
+  useEffect(() => {
+    let interval;
+    if (isSlideshow) {
+      interval = setInterval(() => {
+        setSlideshowIdx(prev => (prev + 1) % photos.length);
+      }, 3500);
+    }
+    return () => clearInterval(interval);
+  }, [isSlideshow, photos.length]);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    setUploadError('');
     if (!file) return;
 
-    // Validación estricta con security.js
     const validation = validateImageFile(file);
     if (!validation.valid) {
       setUploadError(validation.error);
-      sound.playDodge();
+      sound.playPop();
       return;
     }
 
-    setUploadError('');
     const reader = new FileReader();
-    reader.onload = () => {
-      const newPolaroid = {
+    reader.onload = (uploadEvent) => {
+      const newPhoto = {
         id: Date.now(),
-        url: reader.result,
-        caption: 'Nuestro momento mágico ✨',
-        rotation: `${(Math.random() * 8 - 4).toFixed(1)}deg`,
-        date: 'Hoy'
+        url: uploadEvent.target.result,
+        caption: 'Nuestro momento especial ✨',
+        date: 'Hoy',
+        rotate: `${(Math.random() * 6 - 3).toFixed(1)}deg`
       };
-      setPolaroids(prev => [newPolaroid, ...prev]);
+      const updated = [newPhoto, ...photos];
+      setPhotos(updated);
+      safeStorage.setItem('sv_custom_photos', JSON.stringify(updated));
       sound.playMatchSuccess();
     };
     reader.readAsDataURL(file);
   };
 
+  const handleResetPhotos = () => {
+    sound.playPop();
+    setPhotos(DEFAULT_CATS);
+    safeStorage.setItem('sv_custom_photos', JSON.stringify(DEFAULT_CATS));
+  };
+
   return (
-    <div className="w-full glass-card-strong p-6 md:p-10 text-center animate-slide-up mx-auto max-w-4xl flex flex-col items-center">
+    <div className="w-full glass-card-strong p-6 sm:p-10 text-center animate-slide-up mx-auto max-w-5xl flex flex-col items-center">
       
-      {/* Encabezado */}
-      <div className="inline-flex items-center gap-2 bg-rose-100/80 px-4 py-1.5 rounded-full mb-3 border border-rose-200">
-        <span>📸</span>
-        <span className="text-xs md:text-sm font-bold text-rose-800 font-outfit uppercase tracking-wider">
-          Mural de Recuerdos & Gatitos
+      {/* Distintivo Minimalista */}
+      <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-400/20 py-1 px-3.5 rounded-full mb-3">
+        <span className="text-xs font-semibold text-rose-800 uppercase tracking-widest font-outfit">
+          🐱 Álbum de Gatitos & Recuerdos
         </span>
       </div>
 
-      <h2 className="text-3xl md:text-4xl font-bold text-rose-900 font-pacifico mb-2">
-        Nuestras Polaroids de Amor
+      <h2 className="text-2xl sm:text-4xl font-bold text-rose-950 font-pacifico mb-1">
+        Mural de Momentos Inolvidables
       </h2>
-      <p className="text-sm md:text-base text-rose-700 font-quicksand mb-6 max-w-md">
-        Momentos tiernos que derriten el corazón. ¡Toca una foto para ampliarla o añade una vuestra!
+      <p className="text-xs sm:text-base text-rose-700/90 font-quicksand mb-6 max-w-lg">
+        Fotografías y gatitos que capturan la ternura de nuestro amor. Toca cualquier foto para ampliarla.
       </p>
 
-      {/* Botón de Añadir Foto Propia */}
-      <div className="mb-8 flex flex-col items-center">
-        <label className="btn-secondary text-xs sm:text-sm py-2 px-5 cursor-pointer shadow-md flex items-center gap-2">
-          <span>📷</span> Añadir Foto Romántica
-          <input
-            type="file"
-            accept="image/png, image/jpeg, image/webp"
-            className="hidden"
-            onChange={handleAddPhoto}
-            style={{ display: 'none' }}
-          />
-        </label>
-        {uploadError && (
-          <p className="text-xs text-red-600 font-bold mt-2 bg-red-100 py-1 px-3 rounded-full border border-red-300 animate-slide-up">
-            ⚠️ {uploadError}
-          </p>
+      {/* Barra de Acciones Minimalista */}
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="btn-primary text-xs py-2 px-4 shadow-sm"
+        >
+          📷 Añadir Nuestra Foto
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileUpload}
+        />
+
+        <button
+          onClick={() => {
+            sound.playPop();
+            setIsSlideshow(s => !s);
+          }}
+          className={`btn-secondary text-xs py-2 px-4 ${
+            isSlideshow ? 'bg-rose-500 text-white border-rose-500 font-bold' : ''
+          }`}
+        >
+          {isSlideshow ? '⏹️ Detener Pase' : '▶️ Pase de Fotos'}
+        </button>
+
+        {photos.length > DEFAULT_CATS.length && (
+          <button
+            onClick={handleResetPhotos}
+            className="text-xs text-rose-600 hover:text-rose-800 py-1.5 px-3 rounded-full hover:bg-rose-50 cursor-pointer"
+          >
+            Restaurar Gatitos
+          </button>
         )}
       </div>
 
-      {/* Grid de Polaroids Responsivo */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-4">
-        {polaroids.map((item) => (
+      {uploadError && (
+        <div className="mb-4 text-xs font-semibold text-red-600 bg-red-50 py-1.5 px-4 rounded-xl border border-red-200 animate-shake">
+          {uploadError}
+        </div>
+      )}
+
+      {/* Grid de Polaroids con 3D Tilt y Washi Tape */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 w-full">
+        {photos.map((item) => (
           <div
             key={item.id}
             onClick={() => {
               sound.playPop();
               setSelectedPhoto(item);
             }}
-            className="polaroid-card cursor-pointer transform hover:scale-105 transition-all duration-300"
-            style={{ transform: `rotate(${item.rotation})` }}
+            className="tilt-card relative bg-white p-3.5 pb-5 rounded-xl shadow-md hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:scale-103"
+            style={{ transform: `rotate(${item.rotate})` }}
           >
-            {/* Contenedor de Imagen */}
-            <div className="w-full aspect-square overflow-hidden rounded-md bg-rose-50 mb-3 relative shadow-inner">
+            {/* Washi Tape decorativo en el borde superior */}
+            <div className="washi-tape" />
+
+            <div className="w-full aspect-square rounded-lg overflow-hidden bg-rose-50 mb-3 relative group">
               <img
                 src={item.url}
                 alt={item.caption}
-                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
                 loading="lazy"
               />
-              <span className="absolute top-2 right-2 text-xs bg-black/60 text-white px-2 py-0.5 rounded-full font-mono">
-                {item.date}
-              </span>
+              <div className="shine-overlay" />
             </div>
 
-            {/* Pie de foto manuscrito */}
-            <p className="text-rose-900 font-dancing text-xl font-bold truncate px-1">
+            <p className="text-sm font-dancing text-rose-950 font-bold line-clamp-2 px-1 text-center">
               {item.caption}
             </p>
+            <span className="text-[10px] text-gray-400 font-quicksand font-semibold block mt-1">
+              {item.date}
+            </span>
           </div>
         ))}
       </div>
@@ -144,26 +195,55 @@ export default function PolaroidGallery() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white p-4 sm:p-6 rounded-2xl max-w-lg w-full text-center shadow-2xl animate-pop-in relative"
+            className="relative max-w-lg w-full bg-white p-4 sm:p-6 rounded-3xl shadow-2xl animate-pop-in text-center"
           >
             <button
               onClick={() => setSelectedPhoto(null)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-rose-600 text-2xl font-bold cursor-pointer w-8 h-8 flex items-center justify-center rounded-full bg-gray-100"
+              className="absolute top-3 right-3 text-gray-400 hover:text-rose-600 font-bold w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer"
             >
               ✕
             </button>
-
             <img
               src={selectedPhoto.url}
               alt={selectedPhoto.caption}
-              className="w-full max-h-[65vh] object-contain rounded-xl mb-4 shadow-md mx-auto"
+              className="w-full max-h-[65vh] object-cover rounded-2xl mb-4 shadow-sm"
             />
-            <p className="text-rose-900 font-dancing text-2xl md:text-3xl font-bold">
+            <p className="text-xl font-bold font-dancing text-rose-900">
               {selectedPhoto.caption}
             </p>
-            <span className="text-xs text-rose-500 font-quicksand block mt-1">
-              {selectedPhoto.date} • Recuerdo Inolvidable 💕
-            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Slideshow a Pantalla Completa */}
+      {isSlideshow && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/90 backdrop-blur-lg animate-fade-in">
+          <button
+            onClick={() => setIsSlideshow(false)}
+            className="absolute top-6 right-6 text-white text-2xl font-bold p-2 cursor-pointer"
+          >
+            ✕
+          </button>
+          <div className="max-w-2xl w-full text-center">
+            <img
+              key={photos[slideshowIdx].id}
+              src={photos[slideshowIdx].url}
+              alt={photos[slideshowIdx].caption}
+              className="w-full max-h-[70vh] object-contain rounded-2xl mx-auto shadow-2xl animate-fade-in"
+            />
+            <p className="text-2xl font-dancing text-rose-200 mt-4 font-bold">
+              {photos[slideshowIdx].caption}
+            </p>
+            <div className="flex justify-center gap-1.5 mt-3">
+              {photos.map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    i === slideshowIdx ? 'bg-rose-500 w-6' : 'bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

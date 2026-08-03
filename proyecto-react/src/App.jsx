@@ -14,6 +14,8 @@ import LoveLock from './components/games/LoveLock';
 import CoupleQuiz from './components/games/CoupleQuiz';
 import DateRoulette from './components/games/DateRoulette';
 import LoveCoupons from './components/games/LoveCoupons';
+import LoveConstellation from './components/games/LoveConstellation';
+import LovePiano from './components/games/LovePiano';
 
 // Galería de Gatitos y Recuerdos
 import PolaroidGallery from './components/gallery/PolaroidGallery';
@@ -24,6 +26,7 @@ import LoveTimer from './components/timer/LoveTimer';
 // Controles y UI
 import AudioPlayer from './components/ui/AudioPlayer';
 import ParticleBackground from './components/ui/ParticleBackground';
+import MagicTrail from './components/ui/MagicTrail';
 import SettingsModal from './components/ui/SettingsModal';
 import ShareModal from './components/ui/ShareModal';
 
@@ -56,8 +59,8 @@ export default function App() {
     return safeStorage.getItem('sv_has_accepted') === 'true';
   });
 
-  // Pestaña Activa en la Celebración
-  const [activeTab, setActiveTab] = useState('inicio'); // 'inicio' | 'carta' | 'gatitos' | 'juego' | 'candado' | 'quiz' | 'ruleta' | 'cupones' | 'tiempo'
+  // Pestaña Activa
+  const [activeTab, setActiveTab] = useState('inicio');
 
   // Modales
   const [showSettings, setShowSettings] = useState(false);
@@ -78,7 +81,7 @@ export default function App() {
   const handleAcceptValentine = () => {
     setHasAccepted(true);
     safeStorage.setItem('sv_has_accepted', 'true');
-    sound.startBGM(); // Iniciar música romántica automáticamente al aceptar
+    sound.startBGM();
   };
 
   const handleSaveSettings = (settings) => {
@@ -101,31 +104,36 @@ export default function App() {
   };
 
   const tabs = [
-    { id: 'inicio', label: '💖 Inicio', icon: '💖' },
-    { id: 'carta', label: '📜 Carta', icon: '📜' },
-    { id: 'gatitos', label: '🐱 Fotos & Gatitos', icon: '🐱' },
-    { id: 'juego', label: '🧩 Minijuego', icon: '🧩' },
-    { id: 'candado', label: '🔐 Candado 3D', icon: '🔐' },
-    { id: 'quiz', label: '🧠 Quiz', icon: '🧠' },
-    { id: 'ruleta', label: '🎡 Ruleta Citas', icon: '🎡' },
-    { id: 'cupones', label: '🎟️ Cupones', icon: '🎟️' },
-    { id: 'tiempo', label: '⏳ Tiempo', icon: '⏳' }
+    { id: 'inicio', label: 'Inicio', icon: '💖' },
+    { id: 'carta', label: 'Carta', icon: '📜' },
+    { id: 'gatitos', label: 'Gatitos', icon: '🐱' },
+    { id: 'piano', label: 'Piano', icon: '🎹' },
+    { id: 'constelacion', label: 'Estrellas', icon: '✨' },
+    { id: 'juego', label: 'Memoria', icon: '🧩' },
+    { id: 'candado', label: 'Candado', icon: '🔐' },
+    { id: 'quiz', label: 'Quiz', icon: '🧠' },
+    { id: 'ruleta', label: 'Ruleta', icon: '🎡' },
+    { id: 'cupones', label: 'Cupones', icon: '🎟️' },
+    { id: 'tiempo', label: 'Reloj', icon: '⏳' }
   ];
 
   return (
     <div className="w-full min-h-screen relative flex flex-col items-center justify-start transition-colors duration-700">
       
-      {/* Fondo de Partículas Interactivas */}
+      {/* Fondo de Partículas Cósmicas */}
       <ParticleBackground theme={theme} />
 
-      {/* Controles Flotantes Superiores */}
-      <div className="fixed top-4 right-4 z-40 flex items-center gap-2">
+      {/* Estela Mágica en Cursor y Toques Táctiles */}
+      <MagicTrail />
+
+      {/* Controles Flotantes Superiores Minimalistas */}
+      <div className="fixed top-3 right-3 z-40 flex items-center gap-1.5">
         <button
           onClick={() => {
             sound.playPop();
             setShowShare(true);
           }}
-          className="glass-pill px-3.5 py-2 text-xs font-bold text-rose-900 hover:bg-white shadow-lg flex items-center gap-1.5 border border-rose-300"
+          className="glass-pill px-3 py-1.5 text-xs font-semibold text-rose-900 hover:bg-white shadow-md flex items-center gap-1 border border-rose-300/60 cursor-pointer"
           title="Compartir enlace o código QR"
         >
           <span>📲</span>
@@ -137,7 +145,7 @@ export default function App() {
             sound.playPop();
             setShowCertificate(true);
           }}
-          className="glass-pill px-3.5 py-2 text-xs font-bold text-amber-900 bg-amber-50/90 hover:bg-amber-100 shadow-lg flex items-center gap-1.5 border border-amber-300"
+          className="glass-pill px-3 py-1.5 text-xs font-semibold text-amber-900 bg-amber-50/80 hover:bg-amber-100 shadow-md flex items-center gap-1 border border-amber-300/60 cursor-pointer"
           title="Ver Certificado de San Valentín"
         >
           <span>🏆</span>
@@ -149,14 +157,14 @@ export default function App() {
             sound.playPop();
             setShowSettings(true);
           }}
-          className="glass-pill p-2 text-xs font-bold text-gray-700 hover:bg-white shadow-lg flex items-center justify-center border border-gray-200"
+          className="glass-pill p-1.5 text-xs font-semibold text-gray-700 hover:bg-white shadow-md flex items-center justify-center border border-gray-200 cursor-pointer"
           title="Ajustes y Personalización"
         >
           <span>⚙️</span>
         </button>
       </div>
 
-      {/* Reproductor de Música Flotante */}
+      {/* Reproductor de Música Flotante Minimalista */}
       <AudioPlayer />
 
       {/* ETAPA 1: Sobre Cerrado */}
@@ -177,13 +185,13 @@ export default function App() {
 
       {/* ETAPA 3: Experiencia Completa de Celebración */}
       {hasOpenedEnvelope && hasAccepted && (
-        <div className="w-full relative z-10 flex flex-col items-center pt-16 pb-24 px-3 sm:px-6">
+        <div className="w-full relative z-10 flex flex-col items-center pt-14 pb-20 px-3 sm:px-6">
           
           <div className="container-custom">
             
-            {/* Barra de Navegación por Pestañas Responsiva */}
-            <header className="w-full mb-8 flex justify-center sticky top-3 z-30">
-              <nav aria-label="Secciones románticas" className="glass-pill p-1.5 shadow-xl flex items-center gap-1 overflow-x-auto max-w-full border border-rose-200/80">
+            {/* Barra de Navegación Minimalista con Scroll Táctil */}
+            <header className="w-full mb-6 flex justify-center sticky top-2 z-30">
+              <nav aria-label="Secciones románticas" className="glass-pill p-1 shadow-lg flex items-center gap-1 overflow-x-auto max-w-full border border-rose-200/60">
                 {tabs.map(tab => (
                   <button
                     key={tab.id}
@@ -192,16 +200,16 @@ export default function App() {
                       setActiveTab(tab.id);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+                    className={`nav-tab text-xs py-1 px-3 ${activeTab === tab.id ? 'active' : ''}`}
                   >
                     <span>{tab.icon}</span>
-                    <span>{tab.label.replace(/^[^\s]+\s/, '')}</span>
+                    <span>{tab.label}</span>
                   </button>
                 ))}
               </nav>
             </header>
 
-            {/* Contenido Dinámico de la Pestaña Seleccionada */}
+            {/* Contenido de la Pestaña Activa */}
             <main className="w-full flex flex-col items-center justify-center">
               {activeTab === 'inicio' && (
                 <CelebrationHero
@@ -220,6 +228,14 @@ export default function App() {
 
               {activeTab === 'gatitos' && (
                 <PolaroidGallery />
+              )}
+
+              {activeTab === 'piano' && (
+                <LovePiano />
+              )}
+
+              {activeTab === 'constelacion' && (
+                <LoveConstellation />
               )}
 
               {activeTab === 'juego' && (
@@ -254,9 +270,9 @@ export default function App() {
               )}
             </main>
 
-            {/* Pie de Página Romántico */}
-            <footer className="mt-16 text-center text-xs text-rose-800/80 font-quicksand font-semibold">
-              Hecho con todo el amor del universo para <strong className="text-rose-900">{recipientName}</strong> 💕
+            {/* Pie de Página Minimalista */}
+            <footer className="mt-14 text-center text-xs text-rose-800/70 font-quicksand font-medium">
+              Hecho con amor infinito para <strong className="text-rose-900">{recipientName}</strong> ✨
             </footer>
 
           </div>

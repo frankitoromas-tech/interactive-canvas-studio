@@ -1,4 +1,4 @@
-// Módulo de Seguridad Estricta y Sanitización (XSS, Input Validation, Safe Storage)
+// Módulo de Seguridad Estricta, Sanitización, Validación y Safe Storage
 
 /**
  * Sanitiza entradas de texto para prevenir ataques XSS e inyecciones en el DOM.
@@ -33,6 +33,32 @@ export function sanitizeInput(input, maxLength = 50, fallback = '') {
   clean = clean.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
 
   return clean.trim() || fallback;
+}
+
+/**
+ * Extrae y sanitiza de forma segura los parámetros de la URL (name, sender, theme).
+ * @returns {{ name?: string, sender?: string, theme?: string }}
+ */
+export function getUrlParams() {
+  if (typeof window === 'undefined') return {};
+  try {
+    const searchParams = new URLSearchParams(window.location.search);
+    const rawName = searchParams.get('name');
+    const rawSender = searchParams.get('sender');
+    const rawTheme = searchParams.get('theme');
+
+    const result = {};
+    if (rawName) result.name = sanitizeInput(decodeURIComponent(rawName), 40, 'Luyuromo');
+    if (rawSender) result.sender = sanitizeInput(decodeURIComponent(rawSender), 40, 'Tu Amor');
+    if (rawTheme) {
+      const cleanTheme = sanitizeInput(decodeURIComponent(rawTheme), 25, 'romantic-pink');
+      const validThemes = ['romantic-pink', 'midnight', 'golden', 'enchanted'];
+      result.theme = validThemes.includes(cleanTheme) ? cleanTheme : 'romantic-pink';
+    }
+    return result;
+  } catch (e) {
+    return {};
+  }
 }
 
 /**
@@ -72,43 +98,47 @@ export function validateImageFile(file, maxSizeBytes = 5 * 1024 * 1024) {
 /**
  * Almacenamiento seguro en LocalStorage con protección contra Prototype Pollution.
  */
-export const SafeStorage = {
-  get(key, fallback = null) {
+export const safeStorage = {
+  getItem(key, fallback = null) {
     try {
       const item = localStorage.getItem(key);
-      if (!item) return fallback;
-      const parsed = JSON.parse(item);
-      // Prevenir Prototype Pollution
-      if (parsed && typeof parsed === 'object') {
-        delete parsed.__proto__;
-        delete parsed.constructor;
-        delete parsed.prototype;
-      }
-      return parsed;
+      if (item === null || item === undefined) return fallback;
+      return item;
     } catch {
       return fallback;
     }
   },
 
-  set(key, value) {
+  setItem(key, value) {
     try {
-      // Limitar tamaño de almacenamiento
-      const serialized = JSON.stringify(value);
-      if (serialized.length > 500000) { // Max 500KB por clave
-        console.warn('Payload demasiado grande para almacenamiento seguro.');
+      const valStr = typeof value === 'string' ? value : JSON.stringify(value);
+      if (valStr.length > 500000) { // Max 500KB
         return false;
       }
-      localStorage.setItem(key, serialized);
+      localStorage.setItem(key, valStr);
       return true;
-    } catch (e) {
-      console.error('Error en SafeStorage.set:', e);
+    } catch {
       return false;
     }
   },
 
-  remove(key) {
+  removeItem(key) {
     try {
       localStorage.removeItem(key);
     } catch {}
+  },
+
+  get(key, fallback = null) {
+    return this.getItem(key, fallback);
+  },
+
+  set(key, value) {
+    return this.setItem(key, value);
+  },
+
+  remove(key) {
+    this.removeItem(key);
   }
 };
+
+export const SafeStorage = safeStorage;

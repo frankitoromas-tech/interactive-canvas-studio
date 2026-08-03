@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { sound } from '../utils/soundEffects';
+import { sound } from '../../utils/soundEffects';
 
 export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,16 +17,17 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
-      <div className="text-center max-w-lg w-full">
+      <div className="text-center max-w-lg w-full flex flex-col items-center justify-center">
+        
         {/* Título de invitación */}
         <div className="mb-8">
-          <span className="inline-block py-1.5 px-4 rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/40 text-sm font-semibold tracking-wider uppercase mb-3 animate-pulse">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/40 text-xs sm:text-sm font-semibold tracking-wider uppercase mb-3 animate-pulse">
             ✨ Mensaje Especial Entregado ✨
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white font-pacifico drop-shadow-md">
+          <h2 className="text-3xl sm:text-5xl font-bold text-white font-pacifico drop-shadow-md">
             Para ti, {recipientName}
           </h2>
-          <p className="text-rose-200 text-lg mt-2 font-quicksand">
+          <p className="text-rose-200 text-sm sm:text-lg mt-2 font-quicksand">
             Toca el sello de cera para abrir tu sobre secreto
           </p>
         </div>
@@ -57,7 +58,7 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
             {/* Solapa superior triangular */}
             <div
               className={`absolute top-0 left-0 right-0 h-28 origin-top transition-transform duration-700 ${
-                isOpen ? '-rotate-x-180 opacity-0' : 'rotate-x-0'
+                isOpen ? 'opacity-0' : 'opacity-100'
               }`}
               style={{
                 background: 'linear-gradient(180deg, #fb7185 0%, #e11d48 100%)',
@@ -90,7 +91,7 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
               }}
             />
 
-            {/* Sello de Lacre de Cera Dorado / Rojo */}
+            {/* Sello de Lacre de Cera */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
               <div
                 className={`wax-seal shadow-2xl transition-all duration-300 ${
@@ -111,11 +112,12 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
         <div className="mt-8">
           <button
             onClick={handleOpen}
-            className="btn-primary text-lg px-8 py-3.5 shadow-xl animate-bounce"
+            className="btn-primary text-base sm:text-lg px-8 py-3.5 shadow-xl animate-bounce"
           >
             Abrir Carta de Amor 💌
           </button>
         </div>
+
       </div>
     </div>
   );

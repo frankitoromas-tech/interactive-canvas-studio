@@ -1,207 +1,295 @@
 import React, { useState, useEffect } from 'react';
-import ParticleBackground from './components/ParticleBackground';
-import EnvelopeModal from './components/EnvelopeModal';
-import ValentineQuestion from './components/ValentineQuestion';
-import CelebrationHero from './components/CelebrationHero';
-import LoveLetter from './components/LoveLetter';
-import LoveTimer from './components/LoveTimer';
-import DateRoulette from './components/DateRoulette';
-import LoveCoupons from './components/LoveCoupons';
-import PolaroidGallery from './components/PolaroidGallery';
-import LoveCertificate from './components/LoveCertificate';
-import AudioPlayer from './components/AudioPlayer';
-import SettingsModal from './components/SettingsModal';
+// Sistema de Experiencia Principal
+import EnvelopeModal from './components/experience/EnvelopeModal';
+import ValentineQuestion from './components/experience/ValentineQuestion';
+import CelebrationHero from './components/experience/CelebrationHero';
+
+// Módulos de Carta y Certificado
+import LoveLetter from './components/letter/LoveLetter';
+import LoveCertificate from './components/letter/LoveCertificate';
+
+// Módulos de Juegos e Interactividad
+import MemoryGame from './components/games/MemoryGame';
+import LoveLock from './components/games/LoveLock';
+import CoupleQuiz from './components/games/CoupleQuiz';
+import DateRoulette from './components/games/DateRoulette';
+import LoveCoupons from './components/games/LoveCoupons';
+
+// Galería de Gatitos y Recuerdos
+import PolaroidGallery from './components/gallery/PolaroidGallery';
+
+// Contador de Tiempo Juntos
+import LoveTimer from './components/timer/LoveTimer';
+
+// Controles y UI
+import AudioPlayer from './components/ui/AudioPlayer';
+import ParticleBackground from './components/ui/ParticleBackground';
+import SettingsModal from './components/ui/SettingsModal';
+import ShareModal from './components/ui/ShareModal';
+
+// Utilidades & Seguridad
+import { getUrlParams, safeStorage } from './utils/security';
 import { sound } from './utils/soundEffects';
-import { sanitizeInput } from './utils/security';
 
 export default function App() {
-  // Configuración de URL sanitizada de forma estricta
+  const urlParams = getUrlParams();
+
+  // Estados de Personalización
   const [recipientName, setRecipientName] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const raw = params.get('name') || 'Luyuromo';
-    return sanitizeInput(raw, 40, 'Luyuromo');
+    return urlParams.name || safeStorage.getItem('sv_recipient_name') || 'Luyuromo';
   });
 
   const [senderName, setSenderName] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const raw = params.get('sender') || 'Tu Amor Eterno';
-    return sanitizeInput(raw, 40, 'Tu Amor Eterno');
+    return urlParams.sender || safeStorage.getItem('sv_sender_name') || 'Tu Amor';
   });
 
   const [theme, setTheme] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const validThemes = ['romantic-pink', 'midnight', 'golden', 'enchanted'];
-    const rawTheme = params.get('theme');
-    return validThemes.includes(rawTheme) ? rawTheme : 'romantic-pink';
+    return urlParams.theme || safeStorage.getItem('sv_theme') || 'romantic-pink';
   });
 
-  // Estados de flujo y modales
-  const [showEnvelope, setShowEnvelope] = useState(true);
-  const [hasAccepted, setHasAccepted] = useState(false);
-  const [activeTab, setActiveTab] = useState('letter'); // 'letter' | 'timer' | 'roulette' | 'coupons' | 'gallery'
-  const [showCertificateModal, setShowCertificateModal] = useState(false);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  // Flujo de la Experiencia
+  const [hasOpenedEnvelope, setHasOpenedEnvelope] = useState(() => {
+    return safeStorage.getItem('sv_has_opened_envelope') === 'true';
+  });
 
-  // Sincronizar tema en el DOM para CSS variables
+  const [hasAccepted, setHasAccepted] = useState(() => {
+    return safeStorage.getItem('sv_has_accepted') === 'true';
+  });
+
+  // Pestaña Activa en la Celebración
+  const [activeTab, setActiveTab] = useState('inicio'); // 'inicio' | 'carta' | 'gatitos' | 'juego' | 'candado' | 'quiz' | 'ruleta' | 'cupones' | 'tiempo'
+
+  // Modales
+  const [showSettings, setShowSettings] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
+
+  // Aplicar tema dinámicamente al DOM
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const handleSaveSettings = ({ name, sender, theme: newTheme }) => {
-    setRecipientName(name);
-    setSenderName(sender);
-    setTheme(newTheme);
+  // Handlers del Flujo
+  const handleOpenEnvelope = () => {
+    setHasOpenedEnvelope(true);
+    safeStorage.setItem('sv_has_opened_envelope', 'true');
   };
 
-  const handleAcceptQuestion = () => {
+  const handleAcceptValentine = () => {
     setHasAccepted(true);
-    // Iniciar serenata romántica de fondo automáticamente tras la primera interacción
-    setTimeout(() => {
-      sound.startBGM();
-    }, 1200);
+    safeStorage.setItem('sv_has_accepted', 'true');
+    sound.startBGM(); // Iniciar música romántica automáticamente al aceptar
+  };
+
+  const handleSaveSettings = (settings) => {
+    setRecipientName(settings.name);
+    setSenderName(settings.sender);
+    setTheme(settings.theme);
+
+    safeStorage.setItem('sv_recipient_name', settings.name);
+    safeStorage.setItem('sv_sender_name', settings.sender);
+    safeStorage.setItem('sv_theme', settings.theme);
+  };
+
+  const handleResetExperience = () => {
+    sound.playPop();
+    setHasOpenedEnvelope(false);
+    setHasAccepted(false);
+    setActiveTab('inicio');
+    safeStorage.removeItem('sv_has_opened_envelope');
+    safeStorage.removeItem('sv_has_accepted');
   };
 
   const tabs = [
-    { id: 'letter', label: '💌 Nuestra Carta', icon: '💌' },
-    { id: 'timer', label: '⏳ Tiempo Juntos', icon: '⏳' },
-    { id: 'roulette', label: '🎡 Ruleta de Citas', icon: '🎡' },
-    { id: 'coupons', label: '🎟️ Cupones de Amor', icon: '🎟️' },
-    { id: 'gallery', label: '📸 Polaroids', icon: '📸' }
+    { id: 'inicio', label: '💖 Inicio', icon: '💖' },
+    { id: 'carta', label: '📜 Carta', icon: '📜' },
+    { id: 'gatitos', label: '🐱 Fotos & Gatitos', icon: '🐱' },
+    { id: 'juego', label: '🧩 Minijuego', icon: '🧩' },
+    { id: 'candado', label: '🔐 Candado 3D', icon: '🔐' },
+    { id: 'quiz', label: '🧠 Quiz', icon: '🧠' },
+    { id: 'ruleta', label: '🎡 Ruleta Citas', icon: '🎡' },
+    { id: 'cupones', label: '🎟️ Cupones', icon: '🎟️' },
+    { id: 'tiempo', label: '⏳ Tiempo', icon: '⏳' }
   ];
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden transition-colors duration-700">
+    <div className="w-full min-h-screen relative flex flex-col items-center justify-start transition-colors duration-700">
       
-      {/* Fondo de Partículas Interactivo */}
+      {/* Fondo de Partículas Interactivas */}
       <ParticleBackground theme={theme} />
 
-      {/* Botones de Control Superiores Flotantes */}
+      {/* Controles Flotantes Superiores */}
       <div className="fixed top-4 right-4 z-40 flex items-center gap-2">
         <button
           onClick={() => {
             sound.playPop();
-            setShowSettingsModal(true);
+            setShowShare(true);
           }}
-          className="glass-pill px-4 py-2 text-xs font-bold text-rose-800 hover:bg-white/90 transition-all flex items-center gap-1.5 shadow-lg border border-rose-200"
-          title="Personalizar carta y tema"
+          className="glass-pill px-3.5 py-2 text-xs font-bold text-rose-900 hover:bg-white shadow-lg flex items-center gap-1.5 border border-rose-300"
+          title="Compartir enlace o código QR"
         >
-          <span>⚙️</span> Personalizar
+          <span>📲</span>
+          <span className="hidden sm:inline">Compartir</span>
         </button>
 
-        {hasAccepted && (
-          <button
-            onClick={() => {
-              sound.playPop();
-              setShowCertificateModal(true);
-            }}
-            className="glass-pill px-4 py-2 text-xs font-bold text-amber-800 bg-amber-100/70 hover:bg-amber-100 transition-all flex items-center gap-1.5 shadow-lg border border-amber-300"
-            title="Ver certificado oficial"
-          >
-            <span>📜</span> Certificado
-          </button>
-        )}
+        <button
+          onClick={() => {
+            sound.playPop();
+            setShowCertificate(true);
+          }}
+          className="glass-pill px-3.5 py-2 text-xs font-bold text-amber-900 bg-amber-50/90 hover:bg-amber-100 shadow-lg flex items-center gap-1.5 border border-amber-300"
+          title="Ver Certificado de San Valentín"
+        >
+          <span>🏆</span>
+          <span className="hidden sm:inline">Certificado</span>
+        </button>
+
+        <button
+          onClick={() => {
+            sound.playPop();
+            setShowSettings(true);
+          }}
+          className="glass-pill p-2 text-xs font-bold text-gray-700 hover:bg-white shadow-lg flex items-center justify-center border border-gray-200"
+          title="Ajustes y Personalización"
+        >
+          <span>⚙️</span>
+        </button>
       </div>
 
-      {/* 1. Modal del Sobre Inicial con Sello de Cera */}
-      {showEnvelope && (
+      {/* Reproductor de Música Flotante */}
+      <AudioPlayer />
+
+      {/* ETAPA 1: Sobre Cerrado */}
+      {!hasOpenedEnvelope && (
         <EnvelopeModal
           recipientName={recipientName}
-          onOpen={() => setShowEnvelope(false)}
+          onOpen={handleOpenEnvelope}
         />
       )}
 
-      {/* 2. Pregunta Interactiva "¿Quieres ser mi San Valentín?" */}
-      {!hasAccepted ? (
+      {/* ETAPA 2: Pregunta de San Valentín */}
+      {hasOpenedEnvelope && !hasAccepted && (
         <ValentineQuestion
           recipientName={recipientName}
-          onAccept={handleAcceptQuestion}
+          onAccept={handleAcceptValentine}
         />
-      ) : (
-        /* 3. Hub Principal Romántico Post-"SÍ" */
-        <div className="container-custom pt-16 pb-28 relative z-10 animate-fade-in">
+      )}
+
+      {/* ETAPA 3: Experiencia Completa de Celebración */}
+      {hasOpenedEnvelope && hasAccepted && (
+        <div className="w-full relative z-10 flex flex-col items-center pt-16 pb-24 px-3 sm:px-6">
           
-          {/* Banner de Celebración */}
-          <CelebrationHero
-            recipientName={recipientName}
-            onOpenCertificate={() => setShowCertificateModal(true)}
-          />
+          <div className="container-custom">
+            
+            {/* Barra de Navegación por Pestañas Responsiva */}
+            <header className="w-full mb-8 flex justify-center sticky top-3 z-30">
+              <nav aria-label="Secciones románticas" className="glass-pill p-1.5 shadow-xl flex items-center gap-1 overflow-x-auto max-w-full border border-rose-200/80">
+                {tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      sound.playPop();
+                      setActiveTab(tab.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+                  >
+                    <span>{tab.icon}</span>
+                    <span>{tab.label.replace(/^[^\s]+\s/, '')}</span>
+                  </button>
+                ))}
+              </nav>
+            </header>
 
-          {/* Barra de Navegación por Pestañas */}
-          <div className="glass-pill p-2 max-w-2xl mx-auto mb-10 shadow-xl flex items-center justify-start sm:justify-center gap-1 overflow-x-auto">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  sound.playPop();
-                  setActiveTab(tab.id);
-                }}
-                className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            ))}
+            {/* Contenido Dinámico de la Pestaña Seleccionada */}
+            <main className="w-full flex flex-col items-center justify-center">
+              {activeTab === 'inicio' && (
+                <CelebrationHero
+                  recipientName={recipientName}
+                  onOpenCertificate={() => setShowCertificate(true)}
+                  onOpenShare={() => setShowShare(true)}
+                />
+              )}
+
+              {activeTab === 'carta' && (
+                <LoveLetter
+                  recipientName={recipientName}
+                  senderName={senderName}
+                />
+              )}
+
+              {activeTab === 'gatitos' && (
+                <PolaroidGallery />
+              )}
+
+              {activeTab === 'juego' && (
+                <MemoryGame />
+              )}
+
+              {activeTab === 'candado' && (
+                <LoveLock
+                  recipientName={recipientName}
+                  senderName={senderName}
+                />
+              )}
+
+              {activeTab === 'quiz' && (
+                <CoupleQuiz
+                  recipientName={recipientName}
+                />
+              )}
+
+              {activeTab === 'ruleta' && (
+                <DateRoulette />
+              )}
+
+              {activeTab === 'cupones' && (
+                <LoveCoupons />
+              )}
+
+              {activeTab === 'tiempo' && (
+                <LoveTimer
+                  recipientName={recipientName}
+                />
+              )}
+            </main>
+
+            {/* Pie de Página Romántico */}
+            <footer className="mt-16 text-center text-xs text-rose-800/80 font-quicksand font-semibold">
+              Hecho con todo el amor del universo para <strong className="text-rose-900">{recipientName}</strong> 💕
+            </footer>
+
           </div>
-
-          {/* Contenido de la Pestaña Activa */}
-          <main className="max-w-4xl mx-auto">
-            {activeTab === 'letter' && (
-              <LoveLetter
-                recipientName={recipientName}
-                senderName={senderName}
-              />
-            )}
-
-            {activeTab === 'timer' && (
-              <LoveTimer startDate="2024-02-14" />
-            )}
-
-            {activeTab === 'roulette' && (
-              <DateRoulette />
-            )}
-
-            {activeTab === 'coupons' && (
-              <LoveCoupons />
-            )}
-
-            {activeTab === 'gallery' && (
-              <PolaroidGallery />
-            )}
-          </main>
-
-          {/* Pie de Página Tierno */}
-          <footer className="text-center mt-16 pt-8 border-t border-rose-200/50">
-            <p className="text-rose-700 font-dancing text-2xl font-bold">
-              Hecho con todo mi amor para {recipientName} 💕
-            </p>
-            <p className="text-xs text-rose-500 font-quicksand mt-1">
-              San Valentín • Por siempre juntos ✨
-            </p>
-          </footer>
 
         </div>
       )}
 
-      {/* Reproductor de Audio Flotante */}
-      <AudioPlayer />
-
-      {/* Modal de Certificado */}
-      {showCertificateModal && (
-        <LoveCertificate
-          recipientName={recipientName}
-          senderName={senderName}
-          onClose={() => setShowCertificateModal(false)}
-        />
-      )}
-
-      {/* Modal de Ajustes */}
-      {showSettingsModal && (
+      {/* MODALES GLOBALES */}
+      {showSettings && (
         <SettingsModal
           currentName={recipientName}
           currentSender={senderName}
           currentTheme={theme}
           onSave={handleSaveSettings}
-          onClose={() => setShowSettingsModal(false)}
+          onResetExperience={handleResetExperience}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+
+      {showShare && (
+        <ShareModal
+          recipientName={recipientName}
+          senderName={senderName}
+          theme={theme}
+          onClose={() => setShowShare(false)}
+        />
+      )}
+
+      {showCertificate && (
+        <LoveCertificate
+          recipientName={recipientName}
+          senderName={senderName}
+          onClose={() => setShowCertificate(false)}
         />
       )}
 

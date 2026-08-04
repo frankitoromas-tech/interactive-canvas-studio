@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { runSecurityAuditSuite } from '../../utils/security';
 
@@ -9,7 +9,7 @@ export default function SystemDiagnosticModal({ onClose }) {
   const [storageUsage, setStorageUsage] = useState({ usedKb: 0, count: 0 });
 
   // Calcular uso de LocalStorage
-  const calculateStorage = () => {
+  const calculateStorage = useCallback(() => {
     try {
       let totalBytes = 0;
       let count = 0;
@@ -26,7 +26,15 @@ export default function SystemDiagnosticModal({ onClose }) {
         count
       });
     } catch (e) {}
-  };
+  }, []);
+
+  const runAudit = useCallback(() => {
+    sound.playPop();
+    const results = runSecurityAuditSuite();
+    setAuditResults(results);
+    setAudioStats(sound.getAudioDiagnostics());
+    calculateStorage();
+  }, [calculateStorage]);
 
   // Medidor de FPS en tiempo real
   useEffect(() => {
@@ -51,16 +59,7 @@ export default function SystemDiagnosticModal({ onClose }) {
   // Ejecutar auditoría inicial
   useEffect(() => {
     runAudit();
-    calculateStorage();
-  }, []);
-
-  const runAudit = () => {
-    sound.playPop();
-    const results = runSecurityAuditSuite();
-    setAuditResults(results);
-    setAudioStats(sound.getAudioDiagnostics());
-    calculateStorage();
-  };
+  }, [runAudit]);
 
   return (
     <div

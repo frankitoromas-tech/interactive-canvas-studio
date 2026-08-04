@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { sound, ROMANTIC_PLAYLIST } from '../../utils/soundEffects';
+import { sound } from '../../utils/soundEffects';
 import { confettiEngine } from '../../utils/confettiEngine';
 import { rateLimiter, sanitizeInput } from '../../utils/security';
 

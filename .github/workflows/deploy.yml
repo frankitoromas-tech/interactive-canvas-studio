@@ -38,6 +38,8 @@ jobs:
       - name: Build Application
         working-directory: proyecto-react
         run: npm run build
+        env:
+          CI: false
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5

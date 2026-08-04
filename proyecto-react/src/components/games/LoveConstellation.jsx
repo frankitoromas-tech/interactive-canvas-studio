@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { confetti } from '../../utils/confettiEngine';
 
@@ -13,46 +13,49 @@ const CONSTELLATIONS = [
       { x: 30, y: 18 },
       { x: 15, y: 30 },
       { x: 18, y: 55 },
-      { x: 50, y: 85 },
+      { x: 35, y: 75 },
+      { x: 50, y: 90 },
+      { x: 65, y: 75 },
       { x: 82, y: 55 },
       { x: 85, y: 30 },
       { x: 70, y: 18 }
     ],
     connections: [
-      [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0]
+      [0, 1], [1, 2], [2, 3], [3, 4], [4, 5],
+      [5, 6], [6, 7], [7, 8], [8, 9], [9, 0]
     ]
   },
   {
     id: 'infinity',
-    name: 'Constelación del Amor Infinito',
+    name: 'Infinito Amor',
     icon: '♾️',
-    desc: 'Un ciclo eterno de risas, comprensión y momentos inolvidables.',
+    desc: 'Sin principio ni fin, un lazo que perdura más allá del tiempo.',
     stars: [
+      { x: 25, y: 50 },
+      { x: 35, y: 30 },
       { x: 50, y: 50 },
-      { x: 30, y: 25 },
-      { x: 15, y: 50 },
-      { x: 30, y: 75 },
-      { x: 70, y: 25 },
-      { x: 85, y: 50 },
-      { x: 70, y: 75 }
+      { x: 65, y: 70 },
+      { x: 75, y: 50 },
+      { x: 65, y: 30 },
+      { x: 35, y: 70 }
     ],
     connections: [
-      [0, 1], [1, 2], [2, 3], [3, 0], [0, 4], [4, 5], [5, 6], [6, 0]
+      [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 2], [2, 6], [6, 0]
     ]
   },
   {
-    id: 'moon',
-    name: 'Constelación de la Luna Serena',
-    icon: '🌙',
-    desc: 'La luz dulce que nos acompaña en cada noche soñando juntos.',
+    id: 'swan',
+    name: 'Cisnes Enamorados',
+    icon: '🦢',
+    desc: 'Fidelidad, gracia y devoción grabadas en las estrellas.',
     stars: [
-      { x: 55, y: 15 },
-      { x: 30, y: 30 },
-      { x: 25, y: 55 },
-      { x: 35, y: 80 },
-      { x: 60, y: 85 },
-      { x: 45, y: 65 },
-      { x: 42, y: 40 }
+      { x: 20, y: 60 },
+      { x: 30, y: 40 },
+      { x: 45, y: 30 },
+      { x: 55, y: 30 },
+      { x: 70, y: 40 },
+      { x: 80, y: 60 },
+      { x: 50, y: 65 }
     ],
     connections: [
       [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0]
@@ -64,7 +67,6 @@ export default function LoveConstellation() {
   const [selectedConstellation, setSelectedConstellation] = useState(0);
   const [connectedStars, setConnectedStars] = useState([]);
   const [isUnlocked, setIsUnlocked] = useState(false);
-  const canvasRef = useRef(null);
 
   const current = CONSTELLATIONS[selectedConstellation];
 

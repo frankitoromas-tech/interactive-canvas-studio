@@ -138,7 +138,7 @@ export default function CoupleQuiz({ recipientName = 'Luyuromo' }) {
         <div className="mt-4 animate-pop-in flex flex-col items-center w-full">
           <div className="text-6xl mb-3 animate-heartbeat-glow">🏆</div>
           <h3 className="text-3xl font-bold text-rose-900 font-dancing mb-2">
-            ¡Puntuación Perfecta: 100% de Amor!
+            ¡Puntuación Perfecta: {score}% de Amor!
           </h3>
           <p className="text-sm md:text-base text-rose-700 font-quicksand max-w-md mb-6">
             Has demostrado que nuestro amor está en sincronía cósmica. ¡Eres el amor de mi vida, {recipientName}! 💕

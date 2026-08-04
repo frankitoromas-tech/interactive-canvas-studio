@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function ThreeDHeart({ size = 280 }) {
   const canvasRef = useRef(null);

@@ -2,9 +2,6 @@
 // MÓDULO DE SEGURIDAD ESTRICTA, PENTESTING DEFENSIVO, CRIPTOGRAFÍA & SAFE STORAGE
 // ============================================================================
 
-// Semilla criptográfica interna para ofuscar almacenamiento en cliente
-const CRYPTO_SALT = '💖_sv_secure_vault_2026_✨';
-
 /**
  * Ofuscación simétrica ligera para almacenamiento seguro en localStorage (previene inspección casual de texto plano)
  */
@@ -68,6 +65,7 @@ export function sanitizeInput(input, maxLength = 60, fallback = '') {
   clean = clean.replace(/(?:javascript|vbscript|data\s*:\s*text\/html)\s*:/gi, '');
 
   // 4. Eliminar caracteres de control no imprimibles (excepto saltos de línea y tabuladores estándar)
+  // eslint-disable-next-line no-control-regex
   clean = clean.replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F]/g, '');
 
   // 5. Normalizar espacios en blanco excesivos

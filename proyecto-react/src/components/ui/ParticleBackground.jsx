@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { sound } from '../../utils/soundEffects';
 
 export default function ParticleBackground({ theme = 'romantic-pink' }) {
   const canvasRef = useRef(null);
@@ -16,9 +17,9 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
     resize();
     window.addEventListener('resize', resize);
 
-    // Sistema de partículas de corazones y destellos
+    // Sistema de partículas de corazones y destellos audio-reactivos
     const particles = [];
-    const numParticles = Math.min(36, Math.floor(window.innerWidth / 30));
+    const numParticles = Math.min(40, Math.floor(window.innerWidth / 28));
 
     const heartPath = (ctx, x, y, size) => {
       ctx.save();
@@ -36,6 +37,7 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
+        baseSize: 10 + Math.random() * 16,
         size: 10 + Math.random() * 16,
         speedY: 0.3 + Math.random() * 0.7,
         speedX: (Math.random() - 0.5) * 0.4,
@@ -49,10 +51,17 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Obtener energía / beat del motor de audio en tiempo real
+      const audioEnergy = sound.getAudioEnergy();
+      const beatBoost = audioEnergy * 1.3;
+
       particles.forEach(p => {
-        p.y -= p.speedY;
+        // Velocidad y tamaño reactivos al ritmo musical
+        const currentSpeedY = p.speedY * (1 + beatBoost * 1.5);
+        p.y -= currentSpeedY;
         p.x += p.speedX;
-        p.rotation += p.rotationSpeed;
+        p.rotation += p.rotationSpeed * (1 + beatBoost);
+        p.size = p.baseSize * (1 + beatBoost * 0.4);
 
         if (p.y < -30) {
           p.y = canvas.height + 20;
@@ -60,20 +69,22 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
         }
 
         ctx.save();
+        const dynamicAlpha = Math.min(0.9, p.alpha * (1 + beatBoost * 0.8));
+
         if (p.isSparkle) {
-          // Destello de estrella
+          // Destello de estrella reactivo
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 0.2, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size * 0.25, 0, Math.PI * 2);
           ctx.fillStyle = theme === 'midnight' 
-            ? `rgba(232, 121, 249, ${p.alpha})`
+            ? `rgba(232, 121, 249, ${dynamicAlpha})`
             : theme === 'golden'
-            ? `rgba(245, 158, 11, ${p.alpha})`
-            : `rgba(255, 255, 255, ${p.alpha})`;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = '#f43f5e';
+            ? `rgba(245, 158, 11, ${dynamicAlpha})`
+            : `rgba(255, 255, 255, ${dynamicAlpha})`;
+          ctx.shadowBlur = 10 + beatBoost * 15;
+          ctx.shadowColor = theme === 'golden' ? '#fbbf24' : '#f43f5e';
           ctx.fill();
         } else {
-          // Corazón flotante
+          // Corazón flotante reactivo
           ctx.save();
           ctx.translate(p.x, p.y);
           ctx.rotate(p.rotation);
@@ -81,10 +92,15 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
           
           heartPath(ctx, p.x, p.y, p.size);
           ctx.fillStyle = theme === 'midnight'
-            ? `rgba(168, 85, 247, ${p.alpha * 0.6})`
+            ? `rgba(168, 85, 247, ${dynamicAlpha * 0.7})`
             : theme === 'golden'
-            ? `rgba(251, 191, 36, ${p.alpha * 0.5})`
-            : `rgba(244, 63, 94, ${p.alpha * 0.5})`;
+            ? `rgba(251, 191, 36, ${dynamicAlpha * 0.6})`
+            : `rgba(244, 63, 94, ${dynamicAlpha * 0.6})`;
+          
+          if (beatBoost > 0.2) {
+            ctx.shadowBlur = 8 + beatBoost * 10;
+            ctx.shadowColor = '#fb7185';
+          }
           ctx.fill();
           ctx.restore();
         }

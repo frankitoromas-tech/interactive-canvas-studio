@@ -16,6 +16,7 @@ import DateRoulette from './components/games/DateRoulette';
 import LoveCoupons from './components/games/LoveCoupons';
 import LoveConstellation from './components/games/LoveConstellation';
 import LovePiano from './components/games/LovePiano';
+import TimeCapsule from './components/games/TimeCapsule';
 
 // Galería de Gatitos y Recuerdos
 import PolaroidGallery from './components/gallery/PolaroidGallery';
@@ -25,13 +26,15 @@ import LoveTimer from './components/timer/LoveTimer';
 
 // Controles y UI
 import AudioPlayer from './components/ui/AudioPlayer';
+import CupidOracle from './components/ui/CupidOracle';
 import ParticleBackground from './components/ui/ParticleBackground';
 import MagicTrail from './components/ui/MagicTrail';
 import SettingsModal from './components/ui/SettingsModal';
 import ShareModal from './components/ui/ShareModal';
+import SystemDiagnosticModal from './components/ui/SystemDiagnosticModal';
 
 // Utilidades & Seguridad
-import { getUrlParams, safeStorage } from './utils/security';
+import { getUrlParams, safeStorage, initSecurityShield } from './utils/security';
 import { sound } from './utils/soundEffects';
 
 export default function App() {
@@ -66,10 +69,12 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [showCertificate, setShowCertificate] = useState(false);
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
 
-  // Aplicar tema dinámicamente al DOM
+  // Aplicar tema dinámicamente al DOM e inicializar escudo de seguridad
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    initSecurityShield();
   }, [theme]);
 
   // Handlers del Flujo
@@ -108,13 +113,14 @@ export default function App() {
     { id: 'carta', label: 'Carta', icon: '📜' },
     { id: 'gatitos', label: 'Gatitos', icon: '🐱' },
     { id: 'piano', label: 'Piano', icon: '🎹' },
+    { id: 'capsula', label: 'Cápsula', icon: '⏳' },
     { id: 'constelacion', label: 'Estrellas', icon: '✨' },
     { id: 'juego', label: 'Memoria', icon: '🧩' },
     { id: 'candado', label: 'Candado', icon: '🔐' },
     { id: 'quiz', label: 'Quiz', icon: '🧠' },
     { id: 'ruleta', label: 'Ruleta', icon: '🎡' },
     { id: 'cupones', label: 'Cupones', icon: '🎟️' },
-    { id: 'tiempo', label: 'Reloj', icon: '⏳' }
+    { id: 'tiempo', label: 'Reloj', icon: '⏰' }
   ];
 
   return (
@@ -164,8 +170,17 @@ export default function App() {
         </button>
       </div>
 
-      {/* Reproductor de Música Flotante Minimalista */}
+      {/* Reproductor de Música Flotante con Éxitos Románticos */}
       <AudioPlayer />
+
+      {/* Entidad Inteligente / Oráculo de Amor & Cupido Proactivo */}
+      {hasOpenedEnvelope && hasAccepted && (
+        <CupidOracle
+          recipientName={recipientName}
+          senderName={senderName}
+          activeTab={activeTab}
+        />
+      )}
 
       {/* ETAPA 1: Sobre Cerrado */}
       {!hasOpenedEnvelope && (
@@ -234,6 +249,13 @@ export default function App() {
                 <LovePiano />
               )}
 
+              {activeTab === 'capsula' && (
+                <TimeCapsule
+                  recipientName={recipientName}
+                  senderName={senderName}
+                />
+              )}
+
               {activeTab === 'constelacion' && (
                 <LoveConstellation />
               )}
@@ -270,9 +292,20 @@ export default function App() {
               )}
             </main>
 
-            {/* Pie de Página Minimalista */}
-            <footer className="mt-14 text-center text-xs text-rose-800/70 font-quicksand font-medium">
-              Hecho con amor infinito para <strong className="text-rose-900">{recipientName}</strong> ✨
+            {/* Pie de Página Minimalista con Enlace a Diagnóstico */}
+            <footer className="mt-14 text-center text-xs text-rose-800/70 font-quicksand font-medium flex flex-col items-center gap-1.5">
+              <div>
+                Hecho con amor infinito para <strong className="text-rose-900">{recipientName}</strong> ✨
+              </div>
+              <button
+                onClick={() => {
+                  sound.playPop();
+                  setShowDiagnostics(true);
+                }}
+                className="text-[11px] text-rose-500/70 hover:text-rose-700 hover:underline cursor-pointer"
+              >
+                🛡️ Ver Estado de Seguridad & Auditoría
+              </button>
             </footer>
 
           </div>
@@ -288,6 +321,7 @@ export default function App() {
           currentTheme={theme}
           onSave={handleSaveSettings}
           onResetExperience={handleResetExperience}
+          onOpenDiagnostics={() => setShowDiagnostics(true)}
           onClose={() => setShowSettings(false)}
         />
       )}
@@ -306,6 +340,12 @@ export default function App() {
           recipientName={recipientName}
           senderName={senderName}
           onClose={() => setShowCertificate(false)}
+        />
+      )}
+
+      {showDiagnostics && (
+        <SystemDiagnosticModal
+          onClose={() => setShowDiagnostics(false)}
         />
       )}
 

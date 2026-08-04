@@ -207,6 +207,23 @@ class ConfettiEngine {
       }
     }
   }
+
+  fireHeartRain() {
+    this.cannonCelebration();
+  }
+
+  fireGentle() {
+    this.burst({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      count: 40,
+      spread: 180,
+      velocity: 8
+    });
+  }
 }
 
 export const confetti = new ConfettiEngine();
+export const confettiEngine = confetti;
+export default confetti;
+

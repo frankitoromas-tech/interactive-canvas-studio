@@ -13,8 +13,7 @@ const INITIAL_COUPONS = [
 
 export default function LoveCoupons() {
   const [redeemed, setRedeemed] = useState(() => {
-    const saved = safeStorage.getItem('sv_redeemed_coupons');
-    return saved ? JSON.parse(saved) : [];
+    return safeStorage.getJSON('sv_redeemed_coupons', []);
   });
 
   const handleRedeem = (id) => {
@@ -22,7 +21,7 @@ export default function LoveCoupons() {
     sound.playMatchSuccess();
     const updated = [...redeemed, id];
     setRedeemed(updated);
-    safeStorage.setItem('sv_redeemed_coupons', JSON.stringify(updated));
+    safeStorage.setJSON('sv_redeemed_coupons', updated);
   };
 
   return (

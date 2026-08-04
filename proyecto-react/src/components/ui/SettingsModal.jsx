@@ -8,6 +8,7 @@ export default function SettingsModal({
   currentTheme,
   onSave,
   onResetExperience,
+  onOpenDiagnostics,
   onClose
 }) {
   const [recipient, setRecipient] = useState(currentName);
@@ -111,6 +112,20 @@ export default function SettingsModal({
             <button type="submit" className="btn-primary w-full text-sm py-2.5">
               Guardar Cambios ✨
             </button>
+
+            {onOpenDiagnostics && (
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playPop();
+                  onClose();
+                  onOpenDiagnostics();
+                }}
+                className="btn-secondary w-full text-xs py-2 flex items-center justify-center gap-1.5"
+              >
+                <span>🛡️</span> Auditoría & Diagnóstico de Sistema
+              </button>
+            )}
 
             <button
               type="button"

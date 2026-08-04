@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { sound } from '../../utils/soundEffects';
+import { copyToClipboardSafe } from '../../utils/security';
 
 export default function ShareModal({ recipientName = 'Luyuromo', senderName = 'Tu Amor', theme = 'romantic-pink', onClose }) {
   const canvasRef = useRef(null);
@@ -60,11 +61,14 @@ export default function ShareModal({ recipientName = 'Luyuromo', senderName = 'T
 
   }, [shareUrl]);
 
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     sound.playPop();
-    navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    const success = await copyToClipboardSafe(shareUrl);
+    if (success) {
+      sound.playMatchSuccess();
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
   };
 
   const handleShareWhatsApp = () => {

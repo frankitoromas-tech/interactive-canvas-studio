@@ -35,8 +35,11 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
   const currentReaction = reactions[Math.min(Math.floor(noCount / 2), reactions.length - 1)];
 
   const handleNoDodge = (e) => {
-    e.preventDefault();
-    sound.playDodge();
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    try {
+      sound.playDodge();
+    } catch (err) {}
     
     const rangeX = Math.min(window.innerWidth * 0.35, 170);
     const rangeY = Math.min(window.innerHeight * 0.25, 110);
@@ -51,10 +54,18 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
     setTimeout(() => setIsDodging(false), 200);
   };
 
-  const handleYes = () => {
-    sound.playFanfare();
-    confetti.cannonCelebration();
-    if (onAccept) onAccept();
+  const handleYes = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    try {
+      sound.playFanfare();
+    } catch (err) {}
+    try {
+      confetti.cannonCelebration();
+    } catch (err) {}
+    if (typeof onAccept === 'function') {
+      onAccept();
+    }
   };
 
   return (
@@ -97,27 +108,32 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
           
           {/* Botón SÍ */}
           <button
+            type="button"
             onClick={handleYes}
-            onMouseEnter={() => sound.playPop()}
+            onMouseEnter={() => {
+              try { sound.playPop(); } catch (e) {}
+            }}
             className="btn-primary font-bold transition-all duration-300 shadow-2xl relative group cursor-pointer"
             style={{
               transform: `scale(${yesScale})`,
               padding: `${14 + Math.min(noCount * 2.5, 14)}px ${32 + Math.min(noCount * 5, 24)}px`,
               fontSize: `${1.1 + Math.min(noCount * 0.06, 0.45)}rem`,
-              zIndex: 30
+              zIndex: 30,
+              pointerEvents: 'auto'
             }}
           >
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="relative z-10 flex items-center gap-2 pointer-events-none">
               ¡SÍ, ACEPTO! 💖
             </span>
           </button>
 
           {/* Botón NO */}
           <button
+            type="button"
             onMouseEnter={handleNoDodge}
             onClick={handleNoDodge}
             onTouchStart={handleNoDodge}
-            className={`btn-secondary text-gray-600 font-semibold transition-transform duration-200 select-none shadow-md ${
+            className={`btn-secondary text-gray-600 font-semibold transition-transform duration-200 select-none shadow-md cursor-pointer ${
               isDodging ? 'scale-90 opacity-80' : ''
             }`}
             style={{
@@ -125,7 +141,8 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
               fontSize: `${Math.max(0.8, 0.95 - noCount * 0.04)}rem`,
               padding: '8px 18px',
               maxWidth: '240px',
-              zIndex: 20
+              zIndex: 20,
+              pointerEvents: 'auto'
             }}
           >
             {currentPhrase}

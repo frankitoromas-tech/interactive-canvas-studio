@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sound } from '../../utils/soundEffects';
+import { copyToClipboardSafe } from '../../utils/security';
 
 export default function LoveLetter({ recipientName = 'Luyuromo', senderName = 'Tu Amor' }) {
   const [copied, setCopied] = useState(false);
@@ -35,11 +36,14 @@ Gracias por existir, por ser tú y por decir que sí a ser mi San Valentín hoy,
     return () => clearInterval(interval);
   }, [isTypewriter, letterBody]);
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     sound.playPop();
-    navigator.clipboard.writeText(`Para ${recipientName}:\n\n${letterBody}\n\nCon todo mi amor,\n${senderName}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    const success = await copyToClipboardSafe(`Para ${recipientName}:\n\n${letterBody}\n\nCon todo mi amor,\n${senderName}`);
+    if (success) {
+      sound.playMatchSuccess();
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
   };
 
   return (

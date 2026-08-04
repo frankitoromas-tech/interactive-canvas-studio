@@ -132,14 +132,15 @@ export default function App() {
       {/* Estela Mágica en Cursor y Toques Táctiles */}
       <MagicTrail />
 
-      {/* Controles Flotantes Superiores Minimalistas */}
-      <div className="fixed top-3 right-3 z-40 flex items-center gap-1.5">
+      {/* Controles Flotantes Superiores con Alta Neuroestética y Fluidez */}
+      <header className="quick-nav-bar" aria-label="Acciones rápidas">
         <button
+          type="button"
           onClick={() => {
-            sound.playPop();
+            try { sound.playPop(); } catch (e) {}
             setShowShare(true);
           }}
-          className="glass-pill px-3 py-1.5 text-xs font-semibold text-rose-900 hover:bg-white shadow-md flex items-center gap-1 border border-rose-300/60 cursor-pointer"
+          className="quick-action-btn"
           title="Compartir enlace o código QR"
         >
           <span>📲</span>
@@ -147,11 +148,12 @@ export default function App() {
         </button>
 
         <button
+          type="button"
           onClick={() => {
-            sound.playPop();
+            try { sound.playPop(); } catch (e) {}
             setShowCertificate(true);
           }}
-          className="glass-pill px-3 py-1.5 text-xs font-semibold text-amber-900 bg-amber-50/80 hover:bg-amber-100 shadow-md flex items-center gap-1 border border-amber-300/60 cursor-pointer"
+          className="quick-action-btn border-amber-300 text-amber-900 bg-amber-50/90 hover:bg-amber-100"
           title="Ver Certificado de San Valentín"
         >
           <span>🏆</span>
@@ -159,16 +161,17 @@ export default function App() {
         </button>
 
         <button
+          type="button"
           onClick={() => {
-            sound.playPop();
+            try { sound.playPop(); } catch (e) {}
             setShowSettings(true);
           }}
-          className="glass-pill p-1.5 text-xs font-semibold text-gray-700 hover:bg-white shadow-md flex items-center justify-center border border-gray-200 cursor-pointer"
+          className="quick-action-btn p-2"
           title="Ajustes y Personalización"
         >
           <span>⚙️</span>
         </button>
-      </div>
+      </header>
 
       {/* Reproductor de Música Flotante con Éxitos Románticos */}
       <AudioPlayer />
@@ -210,8 +213,9 @@ export default function App() {
                 {tabs.map(tab => (
                   <button
                     key={tab.id}
+                    type="button"
                     onClick={() => {
-                      sound.playPop();
+                      try { sound.playPop(); } catch (e) {}
                       setActiveTab(tab.id);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}

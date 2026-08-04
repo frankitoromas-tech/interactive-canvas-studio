@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { validateImageFile, compressImageFile, safeStorage, sanitizeInput } from '../../utils/security';
 
+const publicUrl = process.env.PUBLIC_URL || '';
+
 const DEFAULT_CATS = [
   {
     id: 1,
-    url: '/cats/cat1.png',
+    url: `${publicUrl}/cats/cat1.png`,
     caption: 'Tú eres mi flor más hermosa 🌹',
     date: 'Para Siempre',
     rotate: '-2deg',
@@ -13,7 +15,7 @@ const DEFAULT_CATS = [
   },
   {
     id: 2,
-    url: '/cats/cat2.png',
+    url: `${publicUrl}/cats/cat2.png`,
     caption: 'Acurrucados en cada sueño 💕',
     date: 'Inseparables',
     rotate: '3deg',
@@ -21,7 +23,7 @@ const DEFAULT_CATS = [
   },
   {
     id: 3,
-    url: '/cats/cat3.png',
+    url: `${publicUrl}/cats/cat3.png`,
     caption: 'El flechazo más tierno del mundo 💘',
     date: 'Destino',
     rotate: '-1.5deg',
@@ -29,7 +31,7 @@ const DEFAULT_CATS = [
   },
   {
     id: 4,
-    url: '/cats/cat4.png',
+    url: `${publicUrl}/cats/cat4.png`,
     caption: 'Una cartita llena de ronroneos y amor 💌',
     date: 'Con Cariño',
     rotate: '2deg',

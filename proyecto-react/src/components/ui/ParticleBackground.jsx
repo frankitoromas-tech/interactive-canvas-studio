@@ -121,7 +121,16 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 w-full h-full"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        pointerEvents: 'none',
+        zIndex: 0,
+        touchAction: 'none'
+      }}
     />
   );
 }

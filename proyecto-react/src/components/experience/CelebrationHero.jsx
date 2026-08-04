@@ -21,7 +21,7 @@ export default function CelebrationHero({ recipientName = 'Luyuromo', onOpenCert
       
       {/* Lluvia de rosas CSS si está activa */}
       {rainingRoses && (
-        <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden" style={{ pointerEvents: 'none' }}>
           {Array.from({ length: 24 }).map((_, i) => (
             <div
               key={i}
@@ -84,6 +84,15 @@ export default function CelebrationHero({ recipientName = 'Luyuromo', onOpenCert
           >
             {rainingRoses ? '🌹 Detener Rosas' : '🌹 Lluvia de Rosas'}
           </button>
+
+          {onOpenCertificate && (
+            <button
+              onClick={onOpenCertificate}
+              className="btn-secondary text-xs sm:text-sm text-amber-900 border-amber-300 hover:bg-amber-50"
+            >
+              🏆 Ver Certificado Oficial
+            </button>
+          )}
 
           {onOpenShare && (
             <button

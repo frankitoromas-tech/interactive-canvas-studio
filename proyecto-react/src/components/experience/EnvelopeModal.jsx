@@ -5,13 +5,17 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
     if (isOpen) return;
-    sound.playChime();
-    sound.playPop();
+    try {
+      sound.playChime();
+      sound.playPop();
+    } catch (err) {}
     setIsOpen(true);
     setTimeout(() => {
-      if (onOpen) onOpen();
+      if (typeof onOpen === 'function') onOpen();
     }, 900);
   };
 
@@ -111,8 +115,10 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
         {/* Botón directo de Abrir */}
         <div className="mt-8">
           <button
+            type="button"
             onClick={handleOpen}
-            className="btn-primary text-base sm:text-lg px-8 py-3.5 shadow-xl animate-bounce"
+            className="btn-primary text-base sm:text-lg px-8 py-3.5 shadow-xl animate-bounce cursor-pointer"
+            style={{ pointerEvents: 'auto' }}
           >
             Abrir Carta de Amor 💌
           </button>

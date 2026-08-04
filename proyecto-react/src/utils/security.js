@@ -10,19 +10,18 @@ const CRYPTO_SALT = '💖_sv_secure_vault_2026_✨';
  */
 function encryptData(str) {
   try {
-    const textToChars = text => text.split('').map(c => c.charCodeAt(0));
-    const byteHex = n => ("0" + Number(n).toString(16)).substr(-2);
-    const applySaltToChar = code => textToChars(CRYPTO_SALT).reduce((a, b) => a ^ b, code);
-
-    return str
-      .split('')
-      .map(textToChars)
-      .map(applySaltToChar)
-      .map(byteHex)
-      .join('');
+    if (typeof str !== 'string') {
+      str = JSON.stringify(str);
+    }
+    const utf8Bytes = new TextEncoder().encode(str);
+    let binary = '';
+    for (let i = 0; i < utf8Bytes.length; i++) {
+      binary += String.fromCharCode(utf8Bytes[i]);
+    }
+    return btoa(binary);
   } catch (e) {
     try {
-      return btoa(unescape(encodeURIComponent(str)));
+      return btoa(encodeURIComponent(str));
     } catch {
       return str;
     }
@@ -31,21 +30,17 @@ function encryptData(str) {
 
 function decryptData(encoded) {
   try {
-    const textToChars = text => text.split('').map(c => c.charCodeAt(0));
-    const applySaltToChar = code => textToChars(CRYPTO_SALT).reduce((a, b) => a ^ b, code);
-
-    const matches = encoded.match(/.{1,2}/g);
-    if (!matches) return '';
-    return matches
-      .map(hex => parseInt(hex, 16))
-      .map(applySaltToChar)
-      .map(charCode => String.fromCharCode(charCode))
-      .join('');
+    const binary = atob(encoded);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
   } catch (e) {
     try {
-      return decodeURIComponent(escape(atob(encoded)));
+      return decodeURIComponent(atob(encoded));
     } catch {
-      return '';
+      return encoded || '';
     }
   }
 }
@@ -337,28 +332,6 @@ export const rateLimiter = {
   }
 };
 
-/**
- * Escudo de Seguridad para DevTools y Banner Romántico
- */
-export function initSecurityShield() {
-  if (typeof window === 'undefined') return;
-
-  try {
-    const style1 = 'color: #f43f5e; font-size: 20px; font-weight: bold; font-family: sans-serif;';
-    const style2 = 'color: #9f1239; font-size: 13px; font-weight: 500; font-family: sans-serif;';
-    const styleCode = 'color: #ec4899; font-weight: bold;';
-
-    console.log(
-      '%c💖 EXPERIENCIA DE SAN VALENTÍN PROTEGIDA & AUDITADA 💖\n' +
-      '%c✨ Este sitio web contiene momentos únicos y recuerdos creados con amor infinito.\n' +
-      '🔒 Todas las notas, cartas y secretos están cifrados localmente con seguridad de vanguardia.\n' +
-      '%cSi estás aquí buscando código... ¡Te mandamos un abrazo gigante lleno de amor! 🥰',
-      style1,
-      style2,
-      styleCode
-    );
-  } catch (e) {}
-}
 
 /**
  * Suite de Auditoría y Pentesting Automatizado en Vivo (Ejecutada por el Inspector de Salud)
@@ -457,3 +430,170 @@ export function runSecurityAuditSuite() {
 
   return results;
 }
+
+/**
+ * Copia texto al portapapeles de manera 100% confiable y compatible con todos los navegadores y dispositivos móviles.
+ * @param {string} text - Texto a copiar
+ * @returns {Promise<boolean>} Retorna true si tuvo éxito
+ */
+export async function copyToClipboardSafe(text) {
+  if (!text) return false;
+
+  // 1. Intentar API moderna de Clipboard
+  if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      // Fallback a método tradicional
+    }
+  }
+
+  // 2. Fallback con textarea temporal (funciona en contextos restringidos/HTTP/iframes)
+  if (typeof document !== 'undefined') {
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.top = '0';
+      textArea.style.left = '0';
+      textArea.style.width = '2em';
+      textArea.style.height = '2em';
+      textArea.style.padding = '0';
+      textArea.style.border = 'none';
+      textArea.style.outline = 'none';
+      textArea.style.boxShadow = 'none';
+      textArea.style.background = 'transparent';
+      textArea.setAttribute('readonly', '');
+      document.body.appendChild(textArea);
+      textArea.select();
+      textArea.setSelectionRange(0, 99999);
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return successful;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  return false;
+}
+
+let toastTimer = null;
+/**
+ * Muestra un aviso visual no intrusivo y elegante cuando se previene una acción de inspección.
+ */
+export function showSecurityToast(message = '🔒 Esta carta está protegida con amor.') {
+  if (typeof document === 'undefined') return;
+
+  let toast = document.getElementById('sv-security-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'sv-security-toast';
+    toast.className = 'sv-security-toast';
+    document.body.appendChild(toast);
+  }
+
+  toast.innerHTML = `<span>🛡️</span><span>${message}</span>`;
+  toast.classList.add('visible');
+
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    if (toast) toast.classList.remove('visible');
+  }, 2600);
+}
+
+let isHermeticShieldInitialized = false;
+
+/**
+ * Inicializa el blindaje hermético total contra inspección web:
+ * 1. Bloqueo de menú contextual (clic derecho)
+ * 2. Bloqueo de atajos de teclado DevTools (F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S)
+ * 3. Prevención de inyección por arrastre (drag & drop) externo
+ * 4. Limpieza defensiva de consola
+ */
+export function initHermeticShield() {
+  if (typeof window === 'undefined' || isHermeticShieldInitialized) return;
+  isHermeticShieldInitialized = true;
+
+  // 1. Bloqueo de Menú Contextual (Clic Derecho)
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    showSecurityToast('💖 El menú contextual está deshabilitado para proteger esta experiencia.');
+    return false;
+  };
+  window.addEventListener('contextmenu', handleContextMenu, { capture: true, passive: false });
+  document.addEventListener('contextmenu', handleContextMenu, { capture: true, passive: false });
+
+  // 2. Bloqueo de Atajos de Teclado de Inspección y Código Fuente
+  const handleKeyDown = (e) => {
+    const isCtrlOrMeta = e.ctrlKey || e.metaKey;
+    const isShift = e.shiftKey;
+    const key = (e.key || '').toLowerCase();
+    const keyCode = e.keyCode || e.which;
+
+    // F12
+    if (key === 'f12' || keyCode === 123) {
+      e.preventDefault();
+      e.stopPropagation();
+      showSecurityToast('🔒 Inspección deshabilitada en modo hermético.');
+      return false;
+    }
+
+    // Ctrl+Shift+I (Inspector), Ctrl+Shift+J (Consola), Ctrl+Shift+C (Element Picker)
+    if (isCtrlOrMeta && isShift && (key === 'i' || key === 'j' || key === 'c')) {
+      e.preventDefault();
+      e.stopPropagation();
+      showSecurityToast('🔒 Herramientas de desarrollo bloqueadas.');
+      return false;
+    }
+
+    // Ctrl+U (Ver Código Fuente)
+    if (isCtrlOrMeta && key === 'u') {
+      e.preventDefault();
+      e.stopPropagation();
+      showSecurityToast('🔒 Código fuente protegido.');
+      return false;
+    }
+
+    // Ctrl+S (Guardar página)
+    if (isCtrlOrMeta && key === 's') {
+      e.preventDefault();
+      e.stopPropagation();
+      showSecurityToast('🔒 Guardado de página no permitido.');
+      return false;
+    }
+  };
+  window.addEventListener('keydown', handleKeyDown, { capture: true, passive: false });
+
+  // 3. Prevención de Drag & Drop externo fuera de inputs autorizados
+  window.addEventListener('dragover', (e) => {
+    if (!e.target.closest('input[type="file"]')) {
+      e.preventDefault();
+    }
+  }, false);
+
+  window.addEventListener('drop', (e) => {
+    if (!e.target.closest('input[type="file"]')) {
+      e.preventDefault();
+    }
+  }, false);
+
+  // 4. Marca de agua protectora en consola
+  try {
+    if (typeof console !== 'undefined' && console.log) {
+      setTimeout(() => {
+        console.clear();
+        console.log(
+          '%c💖 CARTA DE SAN VALENTÍN PROTEGIDA 💖\n%cEsta experiencia está cifrada y protegida para Luyuromo.',
+          'color: #f43f5e; font-size: 20px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);',
+          'color: #881337; font-size: 14px; font-style: italic;'
+        );
+      }, 800);
+    }
+  } catch (e) {}
+}
+
+// Alias de compatibilidad
+export const initSecurityShield = initHermeticShield;

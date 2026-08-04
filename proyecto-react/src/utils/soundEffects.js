@@ -3,133 +3,93 @@
 
 export const ROMANTIC_PLAYLIST = [
   {
-    id: 'mujer-amante',
-    title: 'Mujer Amante',
-    artist: 'Rata Blanca',
-    category: 'rock',
-    cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=300&q=80',
-    tag: 'Rock Balada Legendaria 🎸',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/11/17/audio_82c237303e.mp3?filename=rock-ballad-guitar-127265.mp3',
+    id: 'clair-de-lune',
+    title: 'Clair de Lune (Luz de Luna)',
+    artist: 'Claude Debussy',
+    category: 'piano',
+    cover: 'https://images.unsplash.com/photo-1520523839898-5071282543e1?auto=format&fit=crop&w=300&q=80',
+    tag: 'Piano de Ensueño 🎹',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/be/Clair_de_lune_%28Debussy%29_Suite_bergamasque.ogg',
     backupProcedural: true
   },
   {
-    id: 'die-with-a-smile',
-    title: 'Die With A Smile',
-    artist: 'Lady Gaga & Bruno Mars',
-    category: 'pop',
+    id: 'nocturne-op9-2',
+    title: 'Nocturne Op. 9 No. 2',
+    artist: 'Frédéric Chopin',
+    category: 'piano',
     cover: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=300&q=80',
-    tag: 'Éxito Mundial 💖',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=romantic-piano-124977.mp3',
+    tag: 'Amor Clásico Eterno 🌹',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/21/Chopin_-_Nocturne_in_E-flat_major%2C_Op._9%2C_No._2.ogg',
     backupProcedural: true
   },
   {
-    id: 'leyenda-hada-mago',
-    title: 'La Leyenda del Hada y el Mago',
-    artist: 'Rata Blanca (Acoustic Version)',
-    category: 'rock',
+    id: 'liebestraum',
+    title: 'Sueño de Amor (Liebestraum No. 3)',
+    artist: 'Franz Liszt',
+    category: 'piano',
     cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=300&q=80',
-    tag: 'Fantasía Épica ⚔️',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b8275308.mp3?filename=epic-emotional-guitar-11004.mp3',
+    tag: 'Pasión Romántica 💖',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Liszt_Liebestraum_3.ogg',
     backupProcedural: true
   },
   {
-    id: 'golden-hour',
-    title: 'Golden Hour',
-    artist: 'JVKE (Romantic Piano)',
-    category: 'pop',
-    cover: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=300&q=80',
-    tag: 'Atardecer Mágico ✨',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-love-111664.mp3',
+    id: 'moonlight-sonata',
+    title: 'Sonata Claro de Luna (Adagio)',
+    artist: 'Ludwig van Beethoven',
+    category: 'piano',
+    cover: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=300&q=80',
+    tag: 'Noche Estrellada 🌙',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Beethoven_Moonlight_1st_movement.ogg',
     backupProcedural: true
   },
   {
-    id: 'until-i-found-you',
-    title: 'Until I Found You',
-    artist: 'Stephen Sanchez (Love Acoustic)',
-    category: 'pop',
-    cover: 'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=300&q=80',
-    tag: 'Amor Retro 🌹',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=love-story-piano-10884.mp3',
-    backupProcedural: true
-  },
-  {
-    id: 'perfect',
-    title: 'Perfect',
-    artist: 'Ed Sheeran (Orchestral Strings)',
-    category: 'pop',
+    id: 'pachelbel-canon',
+    title: 'Canon en Re Mayor',
+    artist: 'Johann Pachelbel',
+    category: 'acustico',
     cover: 'https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=300&q=80',
-    tag: 'Balada Eterna 💍',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/11/06/audio_0155a02805.mp3?filename=in-love-126243.mp3',
+    tag: 'Promesa Incondicional 💍',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/Pachelbel%27s_Canon.ogg',
     backupProcedural: true
   },
   {
-    id: 'solamente-tu',
-    title: 'Solamente Tú',
-    artist: 'Pablo Alborán (Acoustic Guitar)',
+    id: 'gymnopedie',
+    title: 'Gymnopédie No. 1',
+    artist: 'Erik Satie',
     category: 'acustico',
     cover: 'https://images.unsplash.com/photo-1485278537298-ff524e74883b?auto=format&fit=crop&w=300&q=80',
-    tag: 'Pasión Acústica 🕊️',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3?filename=acoustic-guitar-love-116199.mp3',
+    tag: 'Dulzura & Paz 🕊️',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Erik_Satie_-_Gymnop%C3%A9die_No.1.ogg',
     backupProcedural: true
   },
   {
-    id: 'entra-en-mi-vida',
-    title: 'Entra En Mi Vida',
-    artist: 'Sin Bandera (Love Piano)',
-    category: 'pop',
-    cover: 'https://images.unsplash.com/photo-1520523839898-5071282543e1?auto=format&fit=crop&w=300&q=80',
-    tag: 'Balada Inolvidable 💌',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2023/02/28/audio_554868971f.mp3?filename=romantic-piano-ballad-141258.mp3',
-    backupProcedural: true
-  },
-  {
-    id: 'hasta-la-raiz',
-    title: 'Hasta la Raíz',
-    artist: 'Natalia Lafourcade',
-    category: 'acustico',
-    cover: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=300&q=80',
-    tag: 'Amor de Raíz 🌸',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/02/10/audio_fc847669d0.mp3?filename=warm-acoustic-10499.mp3',
-    backupProcedural: true
-  },
-  {
-    id: 'all-of-me',
-    title: 'All of Me',
-    artist: 'John Legend (Romantic Piano)',
+    id: 'fur-elise',
+    title: 'Para Elisa (Für Elise)',
+    artist: 'Ludwig van Beethoven',
     category: 'piano',
-    cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=300&q=80',
-    tag: 'Piano Inmortal 🎹',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2023/01/01/audio_145167099f.mp3?filename=touching-piano-131758.mp3',
-    backupProcedural: true
-  },
-  {
-    id: 'yellow',
-    title: 'Yellow',
-    artist: 'Coldplay (Romantic Acoustic)',
-    category: 'acustico',
-    cover: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=300&q=80',
-    tag: 'Noche Estrellada 🌌',
-    audioUrl: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_2911bca05b.mp3?filename=acoustic-ambient-124376.mp3',
+    cover: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=300&q=80',
+    tag: 'Melodía de Cariño 💌',
+    audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Ludwig_van_Beethoven_-_F%C3%BCr_Elise.ogg',
     backupProcedural: true
   },
   {
     id: 'music-box',
     title: 'Caja de Música de San Valentín',
-    artist: 'Antigravity Procedural Synthesizer',
-    category: 'piano',
+    artist: 'Melodía Procedural de Amor',
+    category: 'procedural',
     cover: 'https://images.unsplash.com/photo-1513883049090-d0b7439799bf?auto=format&fit=crop&w=300&q=80',
-    tag: 'Dulce Melodía 🎀',
-    audioUrl: null, // Sintetizador puro
+    tag: 'Campanitas Mágicas ✨',
+    audioUrl: null,
     backupProcedural: true
   },
   {
     id: 'lofi-romance',
     title: 'Lofi Sunset Romance',
-    artist: 'Chill Beats For Two',
-    category: 'piano',
+    artist: 'Sintetizador Procedural Íntimo',
+    category: 'procedural',
     cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80',
-    tag: 'Relajante ☕',
-    audioUrl: null, // Sintetizador lofi puro
+    tag: 'Atmósfera Cálida ☕',
+    audioUrl: null,
     backupProcedural: true
   }
 ];
@@ -142,17 +102,16 @@ class SoundManager {
     this.dataArray = null;
 
     // Estado del Reproductor
-    this.volume = 0.65;
+    this.volume = 0.7;
     this.isMuted = false;
     this.isPlaying = false;
     this.isLooping = false;
     this.isShuffle = false;
-    this.currentTrackId = 'mujer-amante';
-    this.customTrack = null;
+    this.currentTrackId = 'clair-de-lune';
+    this.customTracks = [];
 
     // Elemento de audio HTML5 para streaming
     this.htmlAudio = null;
-    this.audioSourceNode = null;
     this.currentTime = 0;
     this.duration = 0;
 
@@ -198,15 +157,18 @@ class SoundManager {
       isShuffle: this.isShuffle,
       currentTime: this.currentTime,
       duration: this.duration,
-      currentTrack: this.getCurrentTrackInfo()
+      currentTrack: this.getCurrentTrackInfo(),
+      customTracks: this.customTracks
     }));
   }
 
+  getAllTracks() {
+    return [...this.customTracks, ...ROMANTIC_PLAYLIST];
+  }
+
   getCurrentTrackInfo() {
-    if (this.customTrack && this.currentTrackId === 'custom') {
-      return this.customTrack;
-    }
-    return ROMANTIC_PLAYLIST.find(t => t.id === this.currentTrackId) || ROMANTIC_PLAYLIST[0];
+    const all = this.getAllTracks();
+    return all.find(t => t.id === this.currentTrackId) || ROMANTIC_PLAYLIST[0];
   }
 
   toggleLoop() {
@@ -230,12 +192,12 @@ class SoundManager {
     if (this.analyser && this.dataArray) {
       this.analyser.getByteFrequencyData(this.dataArray);
       let sum = 0;
-      for (let i = 0; i < 8; i++) { // Frecuencias graves / ritmo
+      for (let i = 0; i < 8; i++) {
         sum += this.dataArray[i];
       }
       return (sum / (8 * 255));
     }
-    return 0.15; // Estimación suave
+    return 0.18;
   }
 
   vibrate(ms = 30) {
@@ -269,20 +231,32 @@ class SoundManager {
   loadCustomAudioFile(file) {
     try {
       const url = URL.createObjectURL(file);
-      this.customTrack = {
-        id: 'custom',
+      const newTrack = {
+        id: `custom_${Date.now()}`,
         title: file.name.replace(/\.[^/.]+$/, ""),
-        artist: 'Tu Canción Subida 💖',
+        artist: 'Tu Canción Original MP3 💖',
         category: 'custom',
         cover: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=300&q=80',
-        tag: 'Personalizada 🎵',
+        tag: 'Original Subido 🎵',
         audioUrl: url,
         isCustom: true
       };
-      this.setTrack('custom');
+      
+      this.customTracks = [newTrack, ...this.customTracks];
+      this.setTrack(newTrack.id);
       return true;
     } catch (e) {
+      console.error('Error loading custom audio:', e);
       return false;
+    }
+  }
+
+  removeCustomTrack(trackId) {
+    this.customTracks = this.customTracks.filter(t => t.id !== trackId);
+    if (this.currentTrackId === trackId) {
+      this.setTrack(ROMANTIC_PLAYLIST[0].id);
+    } else {
+      this.notify();
     }
   }
 
@@ -296,26 +270,28 @@ class SoundManager {
   }
 
   nextTrack() {
+    const all = this.getAllTracks();
     if (this.isShuffle) {
-      const otherTracks = ROMANTIC_PLAYLIST.filter(t => t.id !== this.currentTrackId);
-      const randomTrack = otherTracks[Math.floor(Math.random() * otherTracks.length)];
-      this.setTrack(randomTrack ? randomTrack.id : ROMANTIC_PLAYLIST[0].id);
+      const otherTracks = all.filter(t => t.id !== this.currentTrackId);
+      const randomTrack = otherTracks[Math.floor(Math.random() * (otherTracks.length || 1))];
+      this.setTrack(randomTrack ? randomTrack.id : all[0].id);
       return;
     }
-    const currentIndex = ROMANTIC_PLAYLIST.findIndex(t => t.id === this.currentTrackId);
-    const nextIndex = (currentIndex + 1) % ROMANTIC_PLAYLIST.length;
-    this.setTrack(ROMANTIC_PLAYLIST[nextIndex].id);
+    const currentIndex = all.findIndex(t => t.id === this.currentTrackId);
+    const nextIndex = (currentIndex + 1) % all.length;
+    this.setTrack(all[nextIndex].id);
   }
 
   prevTrack() {
-    const currentIndex = ROMANTIC_PLAYLIST.findIndex(t => t.id === this.currentTrackId);
-    const prevIndex = (currentIndex - 1 + ROMANTIC_PLAYLIST.length) % ROMANTIC_PLAYLIST.length;
-    this.setTrack(ROMANTIC_PLAYLIST[prevIndex].id);
+    const all = this.getAllTracks();
+    const currentIndex = all.findIndex(t => t.id === this.currentTrackId);
+    const prevIndex = (currentIndex - 1 + all.length) % all.length;
+    this.setTrack(all[prevIndex].id);
   }
 
   seekTo(timeInSeconds) {
     if (this.htmlAudio && isFinite(timeInSeconds)) {
-      this.htmlAudio.currentTime = Math.max(0, Math.min(this.duration, timeInSeconds));
+      this.htmlAudio.currentTime = Math.max(0, Math.min(this.duration || 1000, timeInSeconds));
       this.currentTime = this.htmlAudio.currentTime;
       this.notify();
     }
@@ -326,11 +302,11 @@ class SoundManager {
     this.isPlaying = true;
     const track = this.getCurrentTrackInfo();
 
+    this.stopProceduralBGM();
+
     if (track && track.audioUrl) {
-      // Reproducir mediante HTML5 Audio + Web Audio API
       if (!this.htmlAudio) {
         this.htmlAudio = new Audio();
-        this.htmlAudio.crossOrigin = 'anonymous';
 
         this.htmlAudio.addEventListener('timeupdate', () => {
           this.currentTime = this.htmlAudio.currentTime;
@@ -352,29 +328,26 @@ class SoundManager {
           this.notify();
         });
 
-        this.htmlAudio.addEventListener('error', () => {
-          // Si falla el streaming, pasar a sintetizador de respaldo sin interrupción
-          console.warn('Streaming audio fallback to procedural synth');
+        this.htmlAudio.addEventListener('error', (e) => {
+          console.warn('Audio streaming notice, switching to procedural melody:', e);
           this.startProceduralBGM();
         });
       }
 
       this.htmlAudio.src = track.audioUrl;
       this.htmlAudio.volume = this.isMuted ? 0 : this.volume;
+      this.htmlAudio.loop = this.isLooping;
       
-      this.htmlAudio.play().catch(e => {
-        this.startProceduralBGM();
-      });
-
-      if (this.ctx && !this.audioSourceNode) {
-        try {
-          this.audioSourceNode = this.ctx.createMediaElementSource(this.htmlAudio);
-          this.audioSourceNode.connect(this.masterGain);
-        } catch (e) {
-          console.warn('Web Audio MediaElementSource bypassed (direct audio output active):', e);
-        }
+      const playPromise = this.htmlAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay policy or deferred
+        });
       }
     } else {
+      if (this.htmlAudio) {
+        try { this.htmlAudio.pause(); } catch (e) {}
+      }
       this.startProceduralBGM();
     }
 

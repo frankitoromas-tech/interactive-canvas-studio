@@ -1,126 +1,189 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { sound } from '../../utils/soundEffects';
+import { haptic } from '../../utils/haptics';
+import { useI18n } from '../../i18n/I18nContext';
 
 export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const envelopeRef = useRef(null);
+
+  const handlePointerMove = (e) => {
+    if (isOpen) return;
+    const rect = envelopeRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const x = clientX - (rect.left + rect.width / 2);
+    const y = clientY - (rect.top + rect.height / 2);
+    const rx = -(y / (rect.height / 2)) * 10;
+    const ry = (x / (rect.width / 2)) * 12;
+    setTilt({ rx, ry });
+  };
+
+  const handlePointerLeave = () => {
+    setIsHovered(false);
+    setTilt({ rx: 0, ry: 0 });
+  };
 
   const handleOpen = (e) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
     if (isOpen) return;
     try {
-      sound.playChime();
-      sound.playPop();
+      haptic.medium();
+      sound.playEnvelopeOpen();
     } catch (err) {}
     setIsOpen(true);
+    setTilt({ rx: 0, ry: 0 });
     setTimeout(() => {
       if (typeof onOpen === 'function') onOpen();
-    }, 900);
+    }, 1100);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
-      <div className="text-center max-w-lg w-full flex flex-col items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xl animate-fade-in select-none">
+      
+      {/* Luces y Estrellas de Fondo Cósmico */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-rose-500/15 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.2s' }} />
+      </div>
+
+      <div className="text-center max-w-lg w-full flex flex-col items-center justify-center relative z-10">
         
-        {/* Título de invitación */}
-        <div className="mb-8">
-          <span className="inline-block py-1.5 px-4 rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/40 text-xs sm:text-sm font-semibold tracking-wider uppercase mb-3 animate-pulse">
-            ✨ Mensaje Especial Entregado ✨
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-bold text-white font-pacifico drop-shadow-md">
-            Para ti, {recipientName}
+        {/* Distintivo de Invitación de Alta Gama */}
+        <div className="mb-6 sm:mb-8 animate-pop-in">
+          <div className="inline-flex items-center gap-2 py-1.5 px-5 rounded-full bg-rose-950/70 border border-amber-300/40 text-amber-200 text-xs sm:text-sm font-semibold tracking-widest uppercase mb-3 shadow-lg backdrop-blur-md">
+            <span className="text-amber-400 animate-pulse">✨</span>
+            <span>{t('envelope.badge', {}, 'Mensaje Secreto de San Valentín')}</span>
+            <span className="text-amber-400 animate-pulse">✨</span>
+          </div>
+          
+          <h2 className="text-3xl sm:text-5xl font-bold text-white font-pacifico drop-shadow-lg tracking-wide">
+            {t('envelope.title', {}, 'Para ti')}, {recipientName}
           </h2>
-          <p className="text-rose-200 text-sm sm:text-lg mt-2 font-quicksand">
-            Toca el sello de cera para abrir tu sobre secreto
+          
+          <p className="text-rose-200/90 text-sm sm:text-base mt-2 font-quicksand font-medium max-w-sm mx-auto">
+            {t('envelope.subtitle', {}, 'Toca el sello real de lacre carmesí para descubrir lo que mi corazón guarda para ti')}
           </p>
         </div>
 
-        {/* Sobre 3D */}
+        {/* Contenedor del Sobre 3D con Inclinación Interactiva */}
         <div
+          ref={envelopeRef}
           onClick={handleOpen}
+          onMouseMove={handlePointerMove}
+          onTouchMove={handlePointerMove}
           onMouseEnter={() => {
             setIsHovered(true);
-            sound.playPop();
+            try { sound.playPop(); } catch (e) {}
           }}
-          onMouseLeave={() => setIsHovered(false)}
-          className="relative mx-auto cursor-pointer select-none transition-all duration-500 transform hover:scale-105 active:scale-95"
+          onMouseLeave={handlePointerLeave}
+          className="relative mx-auto cursor-pointer select-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97]"
           style={{
-            width: '320px',
-            height: '220px',
-            maxWidth: '90vw'
+            width: '330px',
+            height: '230px',
+            maxWidth: '92vw',
+            perspective: '1000px',
+            transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale3d(${isHovered && !isOpen ? 1.04 : 1}, ${isHovered && !isOpen ? 1.04 : 1}, 1)`
           }}
         >
-          {/* Cuerpo del Sobre */}
+          {/* Resplandor Aureo Trasero */}
+          <div 
+            className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-rose-500/25 via-amber-300/30 to-pink-500/25 blur-xl transition-opacity duration-500 pointer-events-none"
+            style={{ opacity: isHovered || isOpen ? 1 : 0.4 }}
+          />
+
+          {/* Cuerpo Principal del Sobre (Velvet Wine Luxury) */}
           <div
-            className="w-full h-full rounded-2xl relative shadow-2xl overflow-hidden flex flex-col justify-end p-6 border border-rose-300/40"
+            className="w-full h-full rounded-2xl relative overflow-hidden flex flex-col justify-end p-6 border border-amber-300/40 shadow-2xl"
             style={{
-              background: 'linear-gradient(135deg, #f43f5e 0%, #be123c 60%, #881337 100%)',
-              boxShadow: '0 25px 50px -12px rgba(225, 29, 72, 0.5)'
+              background: 'linear-gradient(145deg, #700b2b 0%, #4a0418 55%, #26020c 100%)',
+              boxShadow: '0 30px 60px -10px rgba(74, 4, 24, 0.75), inset 0 1px 2px rgba(253, 230, 138, 0.4)'
             }}
           >
-            {/* Solapa superior triangular */}
+            {/* Filigranas doradas en las esquinas */}
+            <div className="absolute top-2 left-2 text-amber-300/40 text-xs font-serif select-none pointer-events-none">⚜</div>
+            <div className="absolute top-2 right-2 text-amber-300/40 text-xs font-serif select-none pointer-events-none">⚜</div>
+
+            {/* Solapa Superior Triangular (Hinged Flap) */}
             <div
-              className={`absolute top-0 left-0 right-0 h-28 origin-top transition-transform duration-700 ${
-                isOpen ? 'opacity-0' : 'opacity-100'
+              className={`absolute top-0 left-0 right-0 h-32 origin-top transition-all duration-700 ease-in-out ${
+                isOpen ? 'opacity-0 scale-y-0' : 'opacity-100 scale-y-100'
               }`}
               style={{
-                background: 'linear-gradient(180deg, #fb7185 0%, #e11d48 100%)',
+                background: 'linear-gradient(180deg, #9f1239 0%, #700b2b 60%, #4a0418 100%)',
                 clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
-                filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))'
+                filter: 'drop-shadow(0 6px 8px rgba(0,0,0,0.4))',
+                borderTop: '1px solid rgba(253, 230, 138, 0.4)'
               }}
             />
 
-            {/* Carta deslizándose hacia arriba al abrir */}
+            {/* Carta Deslizándose hacia arriba con textura de pergamino italiano */}
             <div
-              className={`absolute left-4 right-4 bg-white/95 backdrop-blur rounded-xl p-4 shadow-xl transition-all duration-700 ${
-                isOpen ? '-top-16 opacity-100' : 'top-10 opacity-70'
+              className={`absolute left-4 right-4 bg-[#fdfbf7] rounded-xl p-4 shadow-2xl transition-all duration-700 ease-out ${
+                isOpen ? '-top-20 opacity-100 scale-100' : 'top-8 opacity-70 scale-95'
               }`}
-              style={{ height: '140px' }}
+              style={{
+                height: '150px',
+                border: '1.5px solid #e7dec8',
+                boxShadow: '0 20px 35px rgba(0,0,0,0.25), inset 0 0 25px rgba(217, 119, 6, 0.05)'
+              }}
             >
-              <div className="border border-rose-200 h-full rounded-lg p-3 flex flex-col items-center justify-center text-center">
-                <span className="text-2xl mb-1">💌</span>
-                <p className="text-rose-900 font-pacifico text-lg">¿Aceptas ser mi San Valentín?</p>
-                <p className="text-xs text-rose-500 font-quicksand font-semibold mt-1">Con todo mi corazón...</p>
+              <div className="border border-amber-300/60 h-full rounded-lg p-3 flex flex-col items-center justify-center text-center bg-white/70">
+                <span className="text-2xl mb-1 filter drop-shadow">💌</span>
+                <p className="text-rose-950 font-pacifico text-base sm:text-lg">
+                  ¿Aceptas ser mi San Valentín?
+                </p>
+                <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-amber-400 to-transparent my-1.5" />
+                <p className="text-[11px] text-rose-700 font-quicksand font-bold tracking-wide">
+                  Con todo mi amor infinito...
+                </p>
               </div>
             </div>
 
-            {/* Parte frontal del sobre (triángulo inferior) */}
+            {/* Parte Frontal del Sobre (Bolsillo Triangular Inferior) */}
             <div
-              className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none"
+              className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
               style={{
-                background: 'linear-gradient(0deg, #be123c 0%, #9f1239 100%)',
+                background: 'linear-gradient(0deg, #4a0418 0%, #700b2b 70%, #881337 100%)',
                 clipPath: 'polygon(0 100%, 100% 100%, 50% 20%)',
-                opacity: 0.95
+                opacity: 0.98,
+                filter: 'drop-shadow(0 -2px 4px rgba(0,0,0,0.2))'
               }}
             />
 
-            {/* Sello de Lacre de Cera */}
+            {/* Sello de Lacre Carmesí & Oro */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
               <div
-                className={`wax-seal shadow-2xl transition-all duration-300 ${
-                  isHovered ? 'scale-110 rotate-12' : ''
+                className={`wax-seal ${
+                  isHovered ? 'scale-110 rotate-6' : ''
                 } ${isOpen ? 'scale-150 opacity-0' : 'scale-100'}`}
               >
-                <span>💝</span>
+                <span className="filter drop-shadow-md">💖</span>
               </div>
             </div>
 
-            {/* Destellos decorativos */}
-            <div className="absolute top-3 left-4 text-rose-200/50 text-xl animate-pulse">✨</div>
-            <div className="absolute bottom-3 right-4 text-rose-200/50 text-xl animate-pulse">✨</div>
+            {/* Destellos dorados prismáticos en esquinas */}
+            <div className="absolute top-3 left-4 text-amber-200/60 text-lg animate-pulse">✨</div>
+            <div className="absolute bottom-3 right-4 text-amber-200/60 text-lg animate-pulse" style={{ animationDelay: '0.8s' }}>✨</div>
           </div>
         </div>
 
-        {/* Botón directo de Abrir */}
-        <div className="mt-8">
+        {/* Botón de Apertura Directa con Estilo Haute Couture */}
+        <div className="mt-8 animate-slide-up">
           <button
             type="button"
             onClick={handleOpen}
-            className="btn-primary text-base sm:text-lg px-8 py-3.5 shadow-xl animate-bounce cursor-pointer"
+            className="btn-primary text-base sm:text-lg px-9 py-3.5 shadow-2xl cursor-pointer"
             style={{ pointerEvents: 'auto' }}
           >
-            Abrir Carta de Amor 💌
+            <span className="text-amber-200">✨</span>
+            <span>Abrir Carta de Amor</span>
+            <span className="text-amber-200">💌</span>
           </button>
         </div>
 

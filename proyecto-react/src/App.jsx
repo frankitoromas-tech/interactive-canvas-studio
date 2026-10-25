@@ -32,12 +32,17 @@ import MagicTrail from './components/ui/MagicTrail';
 import SettingsModal from './components/ui/SettingsModal';
 import ShareModal from './components/ui/ShareModal';
 import SystemDiagnosticModal from './components/ui/SystemDiagnosticModal';
+import LanguageSelector from './components/ui/LanguageSelector';
+
+// Localización e i18n
+import { I18nProvider, useI18n } from './i18n/I18nContext';
 
 // Utilidades & Seguridad
 import { getUrlParams, safeStorage, initSecurityShield } from './utils/security';
 import { sound } from './utils/soundEffects';
 
-export default function App() {
+function AppContent() {
+  const { t } = useI18n();
   const urlParams = getUrlParams();
 
   // Estados de Personalización
@@ -109,18 +114,18 @@ export default function App() {
   };
 
   const tabs = [
-    { id: 'inicio', label: 'Inicio', icon: '💖' },
-    { id: 'carta', label: 'Carta', icon: '📜' },
-    { id: 'gatitos', label: 'Gatitos', icon: '🐱' },
-    { id: 'piano', label: 'Piano', icon: '🎹' },
-    { id: 'capsula', label: 'Cápsula', icon: '⏳' },
-    { id: 'constelacion', label: 'Estrellas', icon: '✨' },
-    { id: 'juego', label: 'Memoria', icon: '🧩' },
-    { id: 'candado', label: 'Candado', icon: '🔐' },
-    { id: 'quiz', label: 'Quiz', icon: '🧠' },
-    { id: 'ruleta', label: 'Ruleta', icon: '🎡' },
-    { id: 'cupones', label: 'Cupones', icon: '🎟️' },
-    { id: 'tiempo', label: 'Reloj', icon: '⏰' }
+    { id: 'inicio', label: t('tabs.inicio.label', {}, 'Inicio'), sub: t('tabs.inicio.sub', {}, 'Ἀγάπη'), icon: '💖' },
+    { id: 'carta', label: t('tabs.carta.label', {}, 'Carta'), sub: t('tabs.carta.sub', {}, 'Φιλία'), icon: '📜' },
+    { id: 'gatitos', label: t('tabs.gatitos.label', {}, 'Gatitos'), sub: t('tabs.gatitos.sub', {}, 'Μνήμη'), icon: '🐱' },
+    { id: 'piano', label: t('tabs.piano.label', {}, 'Piano'), sub: t('tabs.piano.sub', {}, 'Τέχνη'), icon: '🎹' },
+    { id: 'capsula', label: t('tabs.capsula.label', {}, 'Cápsula'), sub: t('tabs.capsula.sub', {}, 'Χρόνος'), icon: '⏳' },
+    { id: 'constelacion', label: t('tabs.constelacion.label', {}, 'Estrellas'), sub: t('tabs.constelacion.sub', {}, 'Οὐρανός'), icon: '✨' },
+    { id: 'juego', label: t('tabs.juego.label', {}, 'Memoria'), sub: t('tabs.juego.sub', {}, 'Παιγνίδιον'), icon: '🧩' },
+    { id: 'candado', label: t('tabs.candado.label', {}, 'Candado'), sub: t('tabs.candado.sub', {}, 'Δεσμός'), icon: '🔐' },
+    { id: 'quiz', label: t('tabs.quiz.label', {}, 'Quiz'), sub: t('tabs.quiz.sub', {}, 'Νοῦς'), icon: '🧠' },
+    { id: 'ruleta', label: t('tabs.ruleta.label', {}, 'Ruleta'), sub: t('tabs.ruleta.sub', {}, 'Τύχη'), icon: '🎡' },
+    { id: 'cupones', label: t('tabs.cupones.label', {}, 'Cupones'), sub: t('tabs.cupones.sub', {}, 'Χάριτες'), icon: '🎟️' },
+    { id: 'tiempo', label: t('tabs.tiempo.label', {}, 'Reloj'), sub: t('tabs.tiempo.sub', {}, 'Αἰών'), icon: '⏰' }
   ];
 
   return (
@@ -132,46 +137,58 @@ export default function App() {
       {/* Estela Mágica en Cursor y Toques Táctiles */}
       <MagicTrail />
 
+      {/* Selector de Idioma Flotante Accesible Siempre (Incluso en Sobre y Pregunta) */}
+      {(!hasOpenedEnvelope || !hasAccepted) && (
+        <aside aria-label="Selector de idioma" className="fixed top-3 right-3 z-50 animate-pop-in">
+          <LanguageSelector />
+        </aside>
+      )}
+
       {/* Controles Flotantes Superiores con Alta Neuroestética y Fluidez */}
-      <header className="quick-nav-bar" aria-label="Acciones rápidas">
-        <button
-          type="button"
-          onClick={() => {
-            try { sound.playPop(); } catch (e) {}
-            setShowShare(true);
-          }}
-          className="quick-action-btn"
-          title="Compartir enlace o código QR"
-        >
-          <span>📲</span>
-          <span className="hidden sm:inline">Compartir</span>
-        </button>
+      {hasOpenedEnvelope && hasAccepted && (
+        <header className="quick-nav-bar" aria-label="Acciones rápidas">
+          {/* Selector de Idioma con Tríada Clásica */}
+          <LanguageSelector />
 
-        <button
-          type="button"
-          onClick={() => {
-            try { sound.playPop(); } catch (e) {}
-            setShowCertificate(true);
-          }}
-          className="quick-action-btn border-amber-300 text-amber-900 bg-amber-50/90 hover:bg-amber-100"
-          title="Ver Certificado de San Valentín"
-        >
-          <span>🏆</span>
-          <span className="hidden sm:inline">Certificado</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => {
+              try { sound.playPop(); } catch (e) {}
+              setShowShare(true);
+            }}
+            className="quick-action-btn border-rose-300/50 text-rose-950"
+            title={t('nav.share', {}, 'Compartir enlace o código QR')}
+          >
+            <span>📲</span>
+            <span className="hidden sm:inline">{t('nav.share', {}, 'Compartir')}</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            try { sound.playPop(); } catch (e) {}
-            setShowSettings(true);
-          }}
-          className="quick-action-btn p-2"
-          title="Ajustes y Personalización"
-        >
-          <span>⚙️</span>
-        </button>
-      </header>
+          <button
+            type="button"
+            onClick={() => {
+              try { sound.playPop(); } catch (e) {}
+              setShowCertificate(true);
+            }}
+            className="quick-action-btn border-amber-300/80 text-amber-950 bg-amber-50/95 hover:bg-amber-100 shadow-md"
+            title={t('nav.certificate', {}, 'Ver Certificado de San Valentín')}
+          >
+            <span className="text-amber-500">🏆</span>
+            <span className="hidden sm:inline font-bold">{t('nav.certificate', {}, 'Certificado')}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              try { sound.playPop(); } catch (e) {}
+              setShowSettings(true);
+            }}
+            className="quick-action-btn p-2 text-rose-950"
+            title={t('nav.settings', {}, 'Ajustes y Personalización')}
+          >
+            <span>⚙️</span>
+          </button>
+        </header>
+      )}
 
       {/* Reproductor de Música Flotante con Éxitos Románticos */}
       <AudioPlayer />
@@ -209,7 +226,7 @@ export default function App() {
             
             {/* Barra de Navegación Minimalista con Scroll Táctil */}
             <header className="w-full mb-6 flex justify-center sticky top-2 z-30">
-              <nav aria-label="Secciones románticas" className="glass-pill p-1 shadow-lg flex items-center gap-1 overflow-x-auto max-w-full border border-rose-200/60">
+              <nav aria-label="Secciones románticas" className="glass-pill p-1.5 shadow-xl flex items-center gap-1.5 overflow-x-auto max-w-full border border-white/80">
                 {tabs.map(tab => (
                   <button
                     key={tab.id}
@@ -219,7 +236,7 @@ export default function App() {
                       setActiveTab(tab.id);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`nav-tab text-xs py-1 px-3 ${activeTab === tab.id ? 'active' : ''}`}
+                    className={`nav-tab text-xs py-1.5 px-3.5 ${activeTab === tab.id ? 'active' : ''}`}
                   >
                     <span>{tab.icon}</span>
                     <span>{tab.label}</span>
@@ -296,10 +313,13 @@ export default function App() {
               )}
             </main>
 
-            {/* Pie de Página Minimalista con Enlace a Diagnóstico */}
+            {/* Pie de Página Minimalista con Enlace a Diagnóstico y Sello Frankosyni */}
             <footer className="mt-14 text-center text-xs text-rose-800/70 font-quicksand font-medium flex flex-col items-center gap-1.5">
               <div>
-                Hecho con amor infinito para <strong className="text-rose-900">{recipientName}</strong> ✨
+                {t('footer.madeWithLove', { name: recipientName }, `Hecho con amor infinito para ${recipientName} ✨`)}
+              </div>
+              <div className="text-[11px] font-serif text-rose-600/90 tracking-wide">
+                {t('footer.signature', {}, 'Arquitectura & Τέχνη por Frankosyni (Φρανκοσύνη/Francus.)')}
               </div>
               <button
                 onClick={() => {
@@ -308,7 +328,7 @@ export default function App() {
                 }}
                 className="text-[11px] text-rose-500/70 hover:text-rose-700 hover:underline cursor-pointer"
               >
-                🛡️ Ver Estado de Seguridad & Auditoría
+                {t('footer.securityLink', {}, '🛡️ Ver Estado de Seguridad & Auditoría')}
               </button>
             </footer>
 
@@ -354,5 +374,13 @@ export default function App() {
       )}
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   );
 }

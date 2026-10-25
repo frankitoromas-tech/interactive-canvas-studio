@@ -53,7 +53,7 @@ export default function LoveCoupons() {
               className={`p-5 rounded-2xl border-2 border-dashed relative overflow-hidden transition-all duration-300 text-left flex flex-col justify-between ${
                 isUsed
                   ? 'bg-gray-100/80 border-gray-300 opacity-60 cursor-default'
-                  : 'bg-white/95 border-rose-300 shadow-md hover:shadow-xl hover:scale-102 cursor-pointer'
+                  : 'bg-white/95 border-rose-300 shadow-md hover:shadow-xl hover:scale-102 active:scale-[0.97] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer'
               }`}
             >
               {/* Estampa de Canjeado */}

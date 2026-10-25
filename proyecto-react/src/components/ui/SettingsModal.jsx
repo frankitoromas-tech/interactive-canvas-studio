@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { sanitizeInput } from '../../utils/security';
+import { useI18n } from '../../i18n/I18nContext';
 
 export default function SettingsModal({
   currentName,
@@ -11,6 +12,7 @@ export default function SettingsModal({
   onOpenDiagnostics,
   onClose
 }) {
+  const { language, setLanguage, t, languages } = useI18n();
   const [recipient, setRecipient] = useState(currentName);
   const [sender, setSender] = useState(currentSender);
   const [selectedTheme, setSelectedTheme] = useState(currentTheme);
@@ -35,7 +37,7 @@ export default function SettingsModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="glass-card-strong max-w-md w-full p-6 sm:p-8 text-center relative animate-pop-in flex flex-col items-center"
+        className="glass-card-strong max-w-md w-full p-6 sm:p-8 text-center relative animate-pop-in flex flex-col items-center max-h-[90vh] overflow-y-auto"
       >
         <button
           onClick={onClose}
@@ -46,15 +48,17 @@ export default function SettingsModal({
 
         <span className="text-3xl mb-1">⚙️</span>
         <h3 className="text-2xl font-bold text-rose-900 font-pacifico mb-1">
-          Ajustes & Personalización
+          {t('settings.title', {}, 'Ajustes & Personalización')}
         </h3>
-        <p className="text-xs text-rose-700 font-quicksand mb-6">
-          Personaliza los nombres y la atmósfera visual a tu gusto.
+        <p className="text-xs text-rose-700 font-quicksand mb-5">
+          {t('settings.subtitle', {}, 'Personaliza los nombres, atmósfera visual e idioma a tu gusto.')}
         </p>
 
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4 text-left">
           <div>
-            <label className="text-xs font-bold text-rose-900 block mb-1">Nombre de tu Pareja:</label>
+            <label className="text-xs font-bold text-rose-900 block mb-1">
+              {t('settings.recipientLabel', {}, 'Nombre de tu Pareja:')}
+            </label>
             <input
               type="text"
               value={recipient}
@@ -66,7 +70,9 @@ export default function SettingsModal({
           </div>
 
           <div>
-            <label className="text-xs font-bold text-rose-900 block mb-1">Tu Nombre o Apodo:</label>
+            <label className="text-xs font-bold text-rose-900 block mb-1">
+              {t('settings.senderLabel', {}, 'Tu Nombre o Apodo:')}
+            </label>
             <input
               type="text"
               value={sender}
@@ -77,31 +83,64 @@ export default function SettingsModal({
             />
           </div>
 
+          {/* Selector de Idioma & Dialéctica Clásica */}
           <div>
-            <label className="text-xs font-bold text-rose-900 block mb-2">Tema Visual & Atmósfera:</label>
+            <label className="text-xs font-bold text-rose-900 block mb-1.5 flex items-center justify-between">
+              <span>{t('settings.languageLabel', {}, 'Idioma & Dialéctica:')}</span>
+              <span className="text-[10px] text-amber-700 font-serif">« Ἀγάπη · Φιλία · Τέχνη »</span>
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {languages.map((l) => (
+                <button
+                  type="button"
+                  key={l.code}
+                  onClick={() => {
+                    sound.playPop();
+                    setLanguage(l.code);
+                  }}
+                  className={`p-2 rounded-xl text-center flex flex-col items-center justify-center transition-all border ${
+                    language === l.code
+                      ? 'border-rose-500 bg-rose-500 text-white font-bold shadow-md'
+                      : 'border-rose-200 bg-white/80 text-rose-900 hover:bg-rose-50'
+                  }`}
+                >
+                  <span className="text-lg mb-0.5">{l.flag}</span>
+                  <span className="text-xs font-semibold">{l.name}</span>
+                  <span className={`text-[9px] font-serif ${language === l.code ? 'text-rose-100' : 'text-rose-600'}`}>
+                    {l.greekBadge}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-bold text-rose-900 block mb-2">
+              {t('settings.themeLabel', {}, 'Tema Visual & Atmósfera:')}
+            </label>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { id: 'romantic-pink', name: '🌸 Rosa Romántico', desc: 'Clásico y dulce' },
                 { id: 'midnight', name: '🌌 Noche Estrellada', desc: 'Místico y profundo' },
                 { id: 'golden', name: '✨ Oro y Atardecer', desc: 'Cálido y brillante' },
                 { id: 'enchanted', name: '🌿 Bosque Encantado', desc: 'Fresco y primaveral' }
-              ].map((t) => (
+              ].map((thm) => (
                 <button
                   type="button"
-                  key={t.id}
+                  key={thm.id}
                   onClick={() => {
                     sound.playPop();
-                    setSelectedTheme(t.id);
+                    setSelectedTheme(thm.id);
                   }}
                   className={`p-2 rounded-xl text-xs font-medium transition-all text-left border ${
-                    selectedTheme === t.id
+                    selectedTheme === thm.id
                       ? 'border-rose-500 bg-rose-500 text-white font-bold shadow-md'
                       : 'border-rose-200 bg-white/80 text-rose-900 hover:bg-rose-50'
                   }`}
                 >
-                  <div>{t.name}</div>
-                  <div className={`text-[10px] ${selectedTheme === t.id ? 'text-rose-100' : 'text-gray-500'}`}>
-                    {t.desc}
+                  <div>{thm.name}</div>
+                  <div className={`text-[10px] ${selectedTheme === thm.id ? 'text-rose-100' : 'text-gray-500'}`}>
+                    {thm.desc}
                   </div>
                 </button>
               ))}
@@ -110,7 +149,7 @@ export default function SettingsModal({
 
           <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-rose-200">
             <button type="submit" className="btn-primary w-full text-sm py-2.5">
-              Guardar Cambios ✨
+              {t('settings.saveBtn', {}, 'Guardar Cambios ✨')}
             </button>
 
             {onOpenDiagnostics && (
@@ -123,7 +162,7 @@ export default function SettingsModal({
                 }}
                 className="btn-secondary w-full text-xs py-2 flex items-center justify-center gap-1.5"
               >
-                <span>🛡️</span> Auditoría & Diagnóstico de Sistema
+                <span>🛡️</span> {t('settings.diagnosticsBtn', {}, 'Auditoría & Diagnóstico de Sistema')}
               </button>
             )}
 
@@ -137,7 +176,7 @@ export default function SettingsModal({
               }}
               className="text-xs text-rose-600 hover:text-rose-800 font-semibold py-1.5 cursor-pointer text-center"
             >
-              🔄 Reiniciar Experiencia desde el Inicio
+              {t('settings.resetBtn', {}, '🔄 Reiniciar Experiencia desde el Inicio')}
             </button>
           </div>
         </form>

@@ -32,9 +32,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     
     <title>Para Mi San Valentín 💖 - Una Sorpresa Especial</title>
+      <!-- Metadatos y Accesos Directos PWA -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="%PUBLIC_URL%/icons/icon-512.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="San Valentín" />
   </head>
   <body>
     <noscript>Necesitas habilitar JavaScript para ver esta carta de amor mágica.</noscript>
     <div id="root"></div>
+      <!-- Registro Seguro del Service Worker para PWA Offline -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          var publicUrl = ('%PUBLIC_URL%' && !'%PUBLIC_URL%'.startsWith('%')) ? '%PUBLIC_URL%' : '.';
+          var swUrl = publicUrl + '/sw.js';
+          navigator.serviceWorker
+            .register(swUrl)
+            .then(function (registration) {
+              console.log('[PWA] Service Worker registrado exitosamente en:', registration.scope);
+              registration.onupdatefound = function () {
+                var installingWorker = registration.installing;
+                if (!installingWorker) return;
+                installingWorker.onstatechange = function () {
+                  if (installingWorker.state === 'installed') {
+                    if (navigator.serviceWorker.controller) {
+                      console.log('[PWA] Nueva versión disponible.');
+                    } else {
+                      console.log('[PWA] Aplicación lista para navegación offline.');
+                    }
+                  }
+                };
+              };
+            })
+            .catch(function (error) {
+              console.warn('[PWA] Error registrando el Service Worker:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

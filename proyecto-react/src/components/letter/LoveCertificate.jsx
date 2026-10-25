@@ -10,57 +10,65 @@ export default function LoveCertificate({ recipientName = 'Luyuromo', senderName
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
-      <div className="relative max-w-2xl w-full bg-white rounded-3xl p-6 sm:p-10 shadow-2xl animate-pop-in border-4 border-amber-400 text-center flex flex-col items-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xl animate-fade-in select-none">
+      <div className="relative max-w-2xl w-full bg-white rounded-3xl p-6 sm:p-10 shadow-2xl animate-pop-in border-2 border-amber-300 text-center flex flex-col items-center">
         
-        {/* Botón de Cierre */}
+        {/* Botón de Cierre con Spring Hover */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-rose-600 text-2xl font-bold w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer"
+          className="absolute top-4 right-4 text-gray-400 hover:text-rose-600 text-xl font-bold w-9 h-9 rounded-full bg-rose-50 hover:bg-rose-100 flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-110 active:scale-90"
         >
           ✕
         </button>
 
-        {/* Marco de Certificado */}
-        <div ref={certificateRef} className="w-full border-2 border-dashed border-amber-300 p-6 rounded-2xl bg-amber-50/40">
+        {/* Marco Imperial de Certificado */}
+        <div ref={certificateRef} className="w-full border-2 border-amber-300/80 p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-[#fffdf7] via-[#fffbf2] to-[#fff8eb] shadow-inner relative overflow-hidden">
           
-          <span className="text-3xl mb-1 block">🏆</span>
-          <span className="text-xs uppercase font-extrabold text-amber-800 tracking-widest font-outfit">
+          {/* Filigranas en las esquinas */}
+          <div className="absolute top-2 left-2 text-amber-500/40 text-lg font-serif">⚜</div>
+          <div className="absolute top-2 right-2 text-amber-500/40 text-lg font-serif">⚜</div>
+          <div className="absolute bottom-2 left-2 text-amber-500/40 text-lg font-serif">⚜</div>
+          <div className="absolute bottom-2 right-2 text-amber-500/40 text-lg font-serif">⚜</div>
+
+          <span className="text-4xl mb-1 block filter drop-shadow">🏆</span>
+          <span className="text-xs uppercase font-black text-amber-800 tracking-widest font-outfit block mb-1">
             Certificado Oficial de Amor Incondicional
           </span>
 
-          <h2 className="text-3xl sm:text-4xl font-bold text-rose-900 font-cinzel my-3">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-rose-950 font-cinzel my-2 tracking-wide">
             DECLARACIÓN DE SAN VALENTÍN
           </h2>
 
-          <p className="text-xs sm:text-sm text-gray-600 font-quicksand">
-            Por medio del presente documento, se certifica con validez eterna que:
+          <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-3" />
+
+          <p className="text-xs sm:text-sm text-gray-600 font-quicksand font-medium">
+            Por medio del presente documento real, se certifica con validez eterna que:
           </p>
 
-          <div className="my-4 py-2 border-b-2 border-rose-300 inline-block px-8">
-            <span className="text-3xl sm:text-4xl font-bold text-rose-600 font-pacifico">
+          <div className="my-3 py-1.5 border-b-2 border-rose-300 inline-block px-8">
+            <span className="text-3xl sm:text-4xl font-bold text-rose-600 font-pacifico filter drop-shadow-sm">
               {recipientName}
             </span>
           </div>
 
-          <p className="text-sm sm:text-base text-gray-700 font-quicksand max-w-lg mx-auto leading-relaxed">
-            Ha aceptado libre, feliz y tiernamente ser el San Valentín de <strong>{senderName}</strong>, obteniendo todos los derechos a abrazos ilimitados, chocolates, paseos bajo la luna y amor incondicional por los siglos de los siglos.
+          <p className="text-xs sm:text-base text-gray-700 font-quicksand max-w-lg mx-auto leading-relaxed font-medium">
+            Ha aceptado libre, feliz y tiernamente ser el San Valentín oficial de <strong className="text-rose-900 font-bold">{senderName}</strong>, obteniendo todos los derechos a abrazos ilimitados, chocolates, paseos bajo la luna y amor incondicional por los siglos de los siglos.
           </p>
 
-          {/* Sellos y Firmas */}
-          <div className="mt-8 flex items-center justify-around w-full pt-4 border-t border-amber-200">
+          {/* Sellos Reales y Firmas */}
+          <div className="mt-6 flex items-center justify-around w-full pt-4 border-t border-amber-200/80">
             <div className="text-left">
-              <span className="text-xs text-gray-500 font-semibold block">Fecha de Registro:</span>
-              <span className="text-sm font-bold text-gray-800 font-outfit">{date}</span>
+              <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Fecha de Registro:</span>
+              <span className="text-xs sm:text-sm font-bold text-gray-800 font-outfit">{date}</span>
             </div>
 
-            <div className="wax-seal scale-90">
+            <div className="wax-seal scale-90 sm:scale-95">
               <span>💖</span>
             </div>
 
             <div className="text-right">
-              <span className="text-xs text-gray-500 font-semibold block">Firma de Entrega:</span>
-              <span className="text-xl font-bold text-rose-700 font-dancing">{senderName}</span>
+              <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Firma de Entrega:</span>
+              <span className="text-xl sm:text-2xl font-bold text-rose-700 font-dancing">{senderName}</span>
             </div>
           </div>
 
@@ -69,10 +77,10 @@ export default function LoveCertificate({ recipientName = 'Luyuromo', senderName
         {/* Acciones */}
         <div className="mt-6 flex gap-3">
           <button onClick={handlePrint} className="btn-primary text-xs sm:text-sm">
-            🖨️ Descargar o Imprimir
+            <span>🖨️ Descargar o Imprimir</span>
           </button>
           <button onClick={onClose} className="btn-secondary text-xs sm:text-sm">
-            Cerrar
+            <span>Cerrar</span>
           </button>
         </div>
 

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { confetti } from '../../utils/confettiEngine';
 import { sound } from '../../utils/soundEffects';
 import ThreeDHeart from './ThreeDHeart';
+import { useI18n } from '../../i18n/I18nContext';
 
 export default function CelebrationHero({ recipientName = 'Luyuromo', onOpenCertificate, onOpenShare }) {
+  const { t, greekTrinity } = useI18n();
   const [rainingRoses, setRainingRoses] = useState(false);
 
   const triggerConfetti = () => {
@@ -17,110 +19,144 @@ export default function CelebrationHero({ recipientName = 'Luyuromo', onOpenCert
   };
 
   return (
-    <div className="w-full relative pt-2 pb-6 text-center animate-slide-up flex flex-col items-center">
+    <div className="w-full relative pt-2 pb-8 text-center animate-slide-up flex flex-col items-center">
       
-      {/* Lluvia de rosas CSS si está activa */}
+      {/* Lluvia de Pétalos de Rosas 3D con Físicas Realistas de Caída y Viento */}
       {rainingRoses && (
         <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden" style={{ pointerEvents: 'none' }}>
-          {Array.from({ length: 24 }).map((_, i) => (
+          {Array.from({ length: 28 }).map((_, i) => (
             <div
               key={i}
-              className="absolute text-4xl select-none"
+              className="absolute select-none pointer-events-none"
               style={{
-                left: `${(i * 4.3) % 100}%`,
-                top: '-50px',
-                animation: `roseFall ${3 + (i % 4)}s linear infinite`,
-                animationDelay: `${(i * 0.25)}s`
+                left: `${(i * 3.6 + Math.sin(i) * 5) % 100}%`,
+                top: '-60px',
+                fontSize: `${1.4 + (i % 3) * 0.5}rem`,
+                animation: `roseFlutter ${4 + (i % 4)}s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite`,
+                animationDelay: `${(i * 0.18)}s`,
+                filter: 'drop-shadow(0 4px 6px rgba(112, 11, 43, 0.25))'
               }}
             >
-              🌹
+              {i % 4 === 0 ? '🌹' : i % 4 === 1 ? '🌸' : i % 4 === 2 ? '✨' : '💖'}
             </div>
           ))}
           <style>{`
-            @keyframes roseFall {
-              0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-              100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+            @keyframes roseFlutter {
+              0% { 
+                transform: translate3d(0, 0, 0) rotate(0deg) rotateY(0deg); 
+                opacity: 0; 
+              }
+              15% { opacity: 1; }
+              50% { 
+                transform: translate3d(${15 + Math.random() * 25}px, 50vh, 0) rotate(180deg) rotateY(180deg); 
+              }
+              85% { opacity: 0.9; }
+              100% { 
+                transform: translate3d(${-20 + Math.random() * 30}px, 108vh, 0) rotate(360deg) rotateY(360deg); 
+                opacity: 0; 
+              }
             }
           `}</style>
         </div>
       )}
 
-      {/* Banner Principal Centrado */}
-      <div className="glass-card-strong max-w-3xl w-full p-6 sm:p-10 mb-6 relative overflow-hidden shadow-2xl flex flex-col items-center">
+      {/* Tarjeta de Celebración Aero-espacial */}
+      <div className="glass-card-strong max-w-3xl w-full p-6 sm:p-12 mb-6 relative overflow-hidden shadow-2xl flex flex-col items-center border border-white/90">
         
-        {/* Distintivo superior */}
-        <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-400/30 py-1 px-4 rounded-full mb-3">
-          <span className="text-rose-600 animate-pulse">💖</span>
-          <span className="text-rose-800 text-xs sm:text-sm font-semibold uppercase tracking-wider font-outfit">
-            San Valentín Oficial & Conectado
+        {/* Distintivo de Prestigio Real */}
+        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-500/10 via-amber-300/15 to-rose-500/10 border border-amber-300/40 py-1.5 px-5 rounded-full mb-4 shadow-sm">
+          <span className="text-amber-500 text-xs sm:text-sm animate-pulse">👑</span>
+          <span className="text-rose-950 text-xs sm:text-sm font-extrabold uppercase tracking-widest font-outfit">
+            {t('hero.badgeTitle', {}, 'San Valentín Oficial & Conectado')}
           </span>
-          <span className="text-rose-600 animate-pulse">💖</span>
+          <span className="text-amber-500 text-xs sm:text-sm animate-pulse">👑</span>
         </div>
 
         {/* Modelo 3D de Corazón Interactivo */}
-        <ThreeDHeart size={240} />
+        <ThreeDHeart size={260} />
 
-        {/* Título Romántico */}
-        <h1 className="text-3xl sm:text-5xl font-bold text-rose-900 font-pacifico mb-2">
-          ¡Dijo que sí, {recipientName}!
+        {/* Título de Celebración en Caligrafía Exquisita */}
+        <h1 
+          className="text-3xl sm:text-5xl font-bold text-rose-950 font-pacifico mb-2 tracking-wide"
+          style={{ textShadow: '0 2px 10px rgba(112, 11, 43, 0.14)' }}
+        >
+          {t('hero.title', { name: recipientName }, `¡Dijo que sí, ${recipientName}!`)}
         </h1>
         
-        <p className="text-lg sm:text-2xl text-rose-700 font-dancing max-w-xl mx-auto mb-6 font-bold">
-          "Cada latido de mi corazón lleva grabado tu nombre."
+        <p className="text-xl sm:text-3xl text-rose-700 font-dancing max-w-xl mx-auto mb-6 font-bold leading-relaxed">
+          {t('hero.quote', {}, '"Cada latido de mi corazón lleva grabado tu nombre para siempre."')}
         </p>
 
-        {/* Acciones de Celebración Rápidas */}
-        <div className="flex flex-wrap items-center justify-center gap-3 w-full">
+        {/* Tríada de Frankosyni Integrada Armónicamente */}
+        <div className="flex items-center justify-center gap-2 mb-6 px-3 py-1 rounded-full bg-rose-50/80 border border-rose-200 text-rose-800 text-xs font-serif shadow-sm">
+          <span className="font-bold text-rose-600">{greekTrinity.agape.term}</span>
+          <span className="opacity-40">·</span>
+          <span className="font-bold text-amber-600">{greekTrinity.philia.term}</span>
+          <span className="opacity-40">·</span>
+          <span className="font-bold text-purple-600">{greekTrinity.techne.term}</span>
+        </div>
+
+        {/* Acciones de Celebración con Físicas Spring */}
+        <div className="flex flex-wrap items-center justify-center gap-3.5 w-full">
           <button
             onClick={triggerConfetti}
-            className="btn-primary text-xs sm:text-sm shadow-md"
+            className="btn-primary text-xs sm:text-sm shadow-lg"
           >
-            🎉 ¡Más Confeti!
+            <span className="text-amber-300">🎉</span>
+            <span>{t('hero.btnConfetti', {}, '¡Más Confeti!')}</span>
           </button>
 
           <button
             onClick={toggleRoseRain}
             className="btn-secondary text-xs sm:text-sm"
           >
-            {rainingRoses ? '🌹 Detener Rosas' : '🌹 Lluvia de Rosas'}
+            <span>{rainingRoses ? `🌹 ${t('hero.btnRosesStop', {}, 'Detener Rosas')}` : `🌹 ${t('hero.btnRosesRain', {}, 'Lluvia de Rosas')}`}</span>
           </button>
 
           {onOpenCertificate && (
             <button
               onClick={onOpenCertificate}
-              className="btn-secondary text-xs sm:text-sm text-amber-900 border-amber-300 hover:bg-amber-50"
+              className="btn-secondary text-xs sm:text-sm text-amber-900 border-amber-300/70 hover:bg-amber-50/80"
             >
-              🏆 Ver Certificado Oficial
+              <span>🏆 {t('hero.btnCertificate', {}, 'Ver Certificado Oficial')}</span>
             </button>
           )}
 
           {onOpenShare && (
             <button
               onClick={onOpenShare}
-              className="btn-secondary text-xs sm:text-sm text-emerald-800 border-emerald-300 hover:bg-emerald-50"
+              className="btn-secondary text-xs sm:text-sm text-emerald-800 border-emerald-300/70 hover:bg-emerald-50/80"
             >
-              📲 Compartir en WhatsApp
+              <span>📲 {t('hero.btnShare', {}, 'Compartir en WhatsApp')}</span>
             </button>
           )}
         </div>
 
-        {/* Estadísticas de Amor */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full mt-8 pt-6 border-t border-rose-200/60">
-          <div className="p-3 bg-white/70 rounded-xl">
-            <span className="block text-2xl font-bold text-rose-600 font-outfit">100%</span>
-            <span className="text-xs text-rose-800 font-medium">Compatibilidad</span>
+        {/* Estadísticas de Amor en Tarjetas Frosted Glass */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 w-full mt-8 pt-6 border-t border-rose-200/60">
+          <div className="p-3.5 bg-white/75 backdrop-blur-md rounded-2xl border border-white/90 shadow-sm transition-transform duration-300 hover:scale-105">
+            <span className="block text-2xl font-black text-rose-700 font-outfit">100%</span>
+            <span className="text-xs text-rose-900 font-semibold tracking-wide">
+              {t('hero.stats.compatibility', {}, 'Compatibilidad')}
+            </span>
           </div>
-          <div className="p-3 bg-white/70 rounded-xl">
-            <span className="block text-2xl font-bold text-rose-600 font-outfit">∞</span>
-            <span className="text-xs text-rose-800 font-medium">Sonrisas Juntos</span>
+          <div className="p-3.5 bg-white/75 backdrop-blur-md rounded-2xl border border-white/90 shadow-sm transition-transform duration-300 hover:scale-105">
+            <span className="block text-2xl font-black text-rose-700 font-outfit">∞</span>
+            <span className="text-xs text-rose-900 font-semibold tracking-wide">
+              {t('hero.stats.smiles', {}, 'Sonrisas Juntos')}
+            </span>
           </div>
-          <div className="p-3 bg-white/70 rounded-xl">
-            <span className="block text-2xl font-bold text-rose-600 font-outfit">14 Feb</span>
-            <span className="text-xs text-rose-800 font-medium">Cita de Ensueño</span>
+          <div className="p-3.5 bg-white/75 backdrop-blur-md rounded-2xl border border-white/90 shadow-sm transition-transform duration-300 hover:scale-105">
+            <span className="block text-2xl font-black text-rose-700 font-outfit">14 Feb</span>
+            <span className="text-xs text-rose-900 font-semibold tracking-wide">
+              {t('hero.stats.date', {}, 'Cita Soñada')}
+            </span>
           </div>
-          <div className="p-3 bg-white/70 rounded-xl">
-            <span className="block text-2xl font-bold text-rose-600 font-outfit">Todo</span>
-            <span className="text-xs text-rose-800 font-medium">Mi Amor Eterno</span>
+          <div className="p-3.5 bg-white/75 backdrop-blur-md rounded-2xl border border-white/90 shadow-sm transition-transform duration-300 hover:scale-105">
+            <span className="block text-2xl font-black text-rose-700 font-outfit">Todo</span>
+            <span className="text-xs text-rose-900 font-semibold tracking-wide">
+              {t('hero.stats.love', {}, 'Mi Amor Eterno')}
+            </span>
           </div>
         </div>
 

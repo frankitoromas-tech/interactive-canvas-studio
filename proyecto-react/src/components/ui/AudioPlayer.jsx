@@ -149,7 +149,7 @@ export default function AudioPlayer() {
           {/* Botón Play / Pausa */}
           <button
             onClick={togglePlay}
-            className="w-9 h-9 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white shadow-md flex items-center justify-center text-sm hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+            className="w-9 h-9 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white shadow-md flex items-center justify-center text-sm hover:scale-105 active:scale-[0.94] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] flex-shrink-0 cursor-pointer"
             title={playerState.isPlaying ? "Pausar música" : "Reproducir música"}
           >
             {playerState.isPlaying ? '⏸️' : '▶️'}

@@ -17,25 +17,33 @@ export default function MagicTrail() {
     window.addEventListener('resize', resize);
 
     const particles = [];
-    const colors = ['#f43f5e', '#fb7185', '#fda4af', '#f59e0b', '#ec4899', '#ffffff'];
+    const colors = [
+      '#fde68a', // Champagne Gold Light
+      '#fbbf24', // Champagne Gold
+      '#fda4af', // Rose Quartz
+      '#f43f5e', // Deep Rose
+      '#ffffff', // Diamond Pure White
+      '#f472b6'  // Rose Fuchsia
+    ];
 
     const addParticle = (x, y) => {
-      // Agregar múltiples chispas
-      const count = Math.random() > 0.5 ? 2 : 1;
+      const count = Math.random() > 0.45 ? 2 : 1;
       for (let i = 0; i < count; i++) {
-        const isHeart = Math.random() > 0.65;
+        const isHeart = Math.random() > 0.72;
+        const isStar = !isHeart && Math.random() > 0.4;
         particles.push({
-          x: x + (Math.random() - 0.5) * 12,
-          y: y + (Math.random() - 0.5) * 12,
-          vx: (Math.random() - 0.5) * 1.5,
-          vy: (Math.random() - 0.8) * 1.5,
-          size: isHeart ? 10 + Math.random() * 8 : 2 + Math.random() * 4,
+          x: x + (Math.random() - 0.5) * 14,
+          y: y + (Math.random() - 0.5) * 14,
+          vx: (Math.random() - 0.5) * 1.6,
+          vy: (Math.random() - 0.8) * 1.6,
+          size: isHeart ? 9 + Math.random() * 7 : isStar ? 4 + Math.random() * 4 : 2 + Math.random() * 3.5,
           color: colors[Math.floor(Math.random() * colors.length)],
           alpha: 1,
-          decay: 0.02 + Math.random() * 0.02,
+          decay: 0.024 + Math.random() * 0.02,
           isHeart,
+          isStar,
           rotation: Math.random() * Math.PI * 2,
-          rotSpeed: (Math.random() - 0.5) * 0.1
+          rotSpeed: (Math.random() - 0.5) * 0.12
         });
       }
     };
@@ -57,6 +65,19 @@ export default function MagicTrail() {
       ctx.moveTo(0, 0);
       ctx.bezierCurveTo(-15, -15, -30, 5, 0, 30);
       ctx.bezierCurveTo(30, 5, 15, -15, 0, 0);
+      ctx.closePath();
+      ctx.restore();
+    };
+
+    const drawStar = (ctx, x, y, size) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.beginPath();
+      ctx.moveTo(0, -size);
+      ctx.quadraticCurveTo(0, 0, size, 0);
+      ctx.quadraticCurveTo(0, 0, 0, size);
+      ctx.quadraticCurveTo(0, 0, -size, 0);
+      ctx.quadraticCurveTo(0, 0, 0, -size);
       ctx.closePath();
       ctx.restore();
     };
@@ -90,6 +111,9 @@ export default function MagicTrail() {
           drawHeart(ctx, p.x, p.y, p.size);
           ctx.fill();
           ctx.restore();
+        } else if (p.isStar) {
+          drawStar(ctx, p.x, p.y, p.size);
+          ctx.fill();
         } else {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);

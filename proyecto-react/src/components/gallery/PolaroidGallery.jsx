@@ -7,7 +7,8 @@ const publicUrl = process.env.PUBLIC_URL || '';
 const DEFAULT_CATS = [
   {
     id: 1,
-    url: `${publicUrl}/cats/cat1.png`,
+    url: `${publicUrl}/cats/cat1.webp`,
+    fallbackUrl: `${publicUrl}/cats/cat1.png`,
     caption: 'Tú eres mi flor más hermosa 🌹',
     date: 'Para Siempre',
     rotate: '-2deg',
@@ -15,7 +16,8 @@ const DEFAULT_CATS = [
   },
   {
     id: 2,
-    url: `${publicUrl}/cats/cat2.png`,
+    url: `${publicUrl}/cats/cat2.webp`,
+    fallbackUrl: `${publicUrl}/cats/cat2.png`,
     caption: 'Acurrucados en cada sueño 💕',
     date: 'Inseparables',
     rotate: '3deg',
@@ -23,7 +25,8 @@ const DEFAULT_CATS = [
   },
   {
     id: 3,
-    url: `${publicUrl}/cats/cat3.png`,
+    url: `${publicUrl}/cats/cat3.webp`,
+    fallbackUrl: `${publicUrl}/cats/cat3.png`,
     caption: 'El flechazo más tierno del mundo 💘',
     date: 'Destino',
     rotate: '-1.5deg',
@@ -31,7 +34,8 @@ const DEFAULT_CATS = [
   },
   {
     id: 4,
-    url: `${publicUrl}/cats/cat4.png`,
+    url: `${publicUrl}/cats/cat4.webp`,
+    fallbackUrl: `${publicUrl}/cats/cat4.png`,
     caption: 'Una cartita llena de ronroneos y amor 💌',
     date: 'Con Cariño',
     rotate: '2deg',
@@ -214,7 +218,7 @@ export default function PolaroidGallery() {
               setEditCaptionText(item.caption);
               setIsEditingCaption(false);
             }}
-            className="tilt-card relative bg-white p-3.5 pb-5 rounded-xl shadow-md hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:scale-103 group"
+            className="tilt-card relative bg-white p-3.5 pb-5 rounded-xl shadow-md hover:shadow-2xl cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform hover:scale-103 active:scale-[0.97] group"
             style={{ transform: `rotate(${item.rotate})` }}
           >
             {/* Washi Tape decorativo en el borde superior */}
@@ -232,12 +236,25 @@ export default function PolaroidGallery() {
             )}
 
             <div className="w-full aspect-square rounded-lg overflow-hidden bg-rose-50 mb-3 relative">
-              <img
-                src={item.url}
-                alt={item.caption}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
-                loading="lazy"
-              />
+              <picture>
+                {item.url && item.url.endsWith('.webp') && (
+                  <source srcSet={item.url} type="image/webp" />
+                )}
+                <img
+                  src={item.url}
+                  alt={item.caption}
+                  width={400}
+                  height={400}
+                  decoding="async"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
+                  loading="lazy"
+                  onError={(e) => {
+                    if (item.fallbackUrl && e.currentTarget.src !== item.fallbackUrl) {
+                      e.currentTarget.src = item.fallbackUrl;
+                    }
+                  }}
+                />
+              </picture>
               <div className="shine-overlay" />
             </div>
 

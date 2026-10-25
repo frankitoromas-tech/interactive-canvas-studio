@@ -1,5 +1,7 @@
+import { haptic } from './haptics';
 // Sistema de Audio Avanzado: Streaming de Éxitos Románticos, Carga de MP3, Analizador de Espectro & Síntesis Procedural
-// Compatible con todos los navegadores móviles y desktop.
+// Compatible con todos los navegadores móviles y desktop. Cero dependencias externas.
+// Notas cristalinas, acordes armónicos y frecuencias suaves tipo marimba/campanas celestiales (440Hz - 880Hz).
 
 export const ROMANTIC_PLAYLIST = [
   {
@@ -98,8 +100,11 @@ class SoundManager {
   constructor() {
     this.ctx = null;
     this.masterGain = null;
+    this.compressor = null;
     this.analyser = null;
     this.dataArray = null;
+    this.delayBus = null;
+    this.delayGain = null;
 
     // Estado del Reproductor
     this.volume = 0.7;
@@ -120,26 +125,76 @@ class SoundManager {
     this.listeners = new Set();
   }
 
+  /* ── Inicialización Segura y Desbloqueo del AudioContext ── */
   init() {
     if (!this.ctx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (AudioContext) {
         this.ctx = new AudioContext();
+        
+        // Master Gain
         this.masterGain = this.ctx.createGain();
         this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : this.volume, this.ctx.currentTime);
 
+        // Compresor de dinámica para calidez y protección de picos
+        this.compressor = this.ctx.createDynamicsCompressor();
+        this.compressor.threshold.setValueAtTime(-14, this.ctx.currentTime);
+        this.compressor.knee.setValueAtTime(12, this.ctx.currentTime);
+        this.compressor.ratio.setValueAtTime(4, this.ctx.currentTime);
+        this.compressor.attack.setValueAtTime(0.005, this.ctx.currentTime);
+        this.compressor.release.setValueAtTime(0.18, this.ctx.currentTime);
+
+        // Analizador de frecuencia para visualizadores
         this.analyser = this.ctx.createAnalyser();
         this.analyser.fftSize = 64;
         this.analyser.smoothingTimeConstant = 0.8;
         this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
 
-        this.masterGain.connect(this.analyser);
+        // Bus de retardo estéreo / shimmer celestial
+        this.delayBus = this.ctx.createDelay(1.0);
+        this.delayBus.delayTime.setValueAtTime(0.22, this.ctx.currentTime);
+        this.delayGain = this.ctx.createGain();
+        this.delayGain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+
+        const delayFilter = this.ctx.createBiquadFilter();
+        delayFilter.type = 'lowpass';
+        delayFilter.frequency.setValueAtTime(2400, this.ctx.currentTime);
+
+        this.delayBus.connect(delayFilter);
+        delayFilter.connect(this.delayGain);
+        this.delayGain.connect(this.delayBus);
+        this.delayBus.connect(this.masterGain);
+
+        this.masterGain.connect(this.compressor);
+        this.compressor.connect(this.analyser);
         this.analyser.connect(this.ctx.destination);
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
+  }
+
+  /* ── Helpers Acústicos y Envolventes ADSR Suaves ── */
+  applyEnvelope(param, t0, attack, decay, peak = 1, sustain = 0.0001, release = 0.05) {
+    param.cancelScheduledValues(t0);
+    param.setValueAtTime(0.0001, t0);
+    param.linearRampToValueAtTime(Math.max(peak, 0.0001), t0 + Math.max(attack, 0.001));
+    param.exponentialRampToValueAtTime(Math.max(sustain, 0.0001), t0 + attack + Math.max(decay, 0.001));
+    if (release > 0) {
+      param.exponentialRampToValueAtTime(0.0001, t0 + attack + decay + release);
+    }
+  }
+
+  createNoiseBuffer(duration = 0.22) {
+    if (!this.ctx) return null;
+    const len = Math.floor(this.ctx.sampleRate * duration);
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.8);
+    }
+    return buf;
   }
 
   subscribe(listener) {
@@ -200,12 +255,12 @@ class SoundManager {
     return 0.18;
   }
 
-  vibrate(ms = 30) {
-    if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      try {
-        navigator.vibrate(ms);
-      } catch (e) {}
-    }
+  vibrate(pattern = 10) {
+    if (pattern === 'light') return haptic.light();
+    if (pattern === 'medium') return haptic.medium();
+    if (pattern === 'success') return haptic.success();
+    if (pattern === 'error') return haptic.error();
+    return haptic.vibrate(pattern);
   }
 
   setVolume(val) {
@@ -400,7 +455,7 @@ class SoundManager {
   }
 
   // ==========================================
-  // SINTETIZADOR PROCEDURAL ROMÁNTICO (OFFLINE)
+  // SINTETIZADOR PROCEDURAL ROMÁNTICO (BGM OFFLINE)
   // ==========================================
   startProceduralBGM() {
     if (this.bgmTimer) return;
@@ -468,35 +523,239 @@ class SoundManager {
     }
   }
 
-  // ==========================================
-  // EFECTOS DE SONIDO MICRO-INTERACTIVOS
-  // ==========================================
-  playPop() {
-    this.vibrate(15);
+  // =========================================================
+  // SÍNTESIS FÍSICA PROCEDIMENTAL: MARIMBA & CAMPANAS (440-880Hz)
+  // =========================================================
+
+  // Placa de marimba suave (fundamental cálida + armónico 3.98x percusivo)
+  playMarimbaNote(freq = 523.25, duration = 0.55, velocity = 0.22, sendToDelay = true) {
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
 
     try {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      const now = this.ctx.currentTime;
-      osc.frequency.setValueAtTime(450, now);
-      osc.frequency.exponentialRampToValueAtTime(880, now + 0.06);
+      const t = this.ctx.currentTime;
 
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      // Oscilador fundamental
+      const oscMain = this.ctx.createOscillator();
+      const gainMain = this.ctx.createGain();
+      oscMain.type = 'triangle';
+      oscMain.frequency.setValueAtTime(freq, t);
 
-      osc.connect(gain);
-      gain.connect(this.masterGain);
-      osc.start(now);
-      osc.stop(now + 0.07);
+      // Oscilador de sobretono de madera
+      const oscOvertone = this.ctx.createOscillator();
+      const gainOvertone = this.ctx.createGain();
+      oscOvertone.type = 'sine';
+      oscOvertone.frequency.setValueAtTime(freq * 3.98, t);
+
+      // Filtro de cuerpo cálido
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2200, t);
+      filter.Q.setValueAtTime(1.1, t);
+
+      // Envolvente ADSR aterciopelada
+      this.applyEnvelope(gainMain.gain, t, 0.004, 0.14, velocity, 0.015, Math.max(0.1, duration - 0.15));
+      this.applyEnvelope(gainOvertone.gain, t, 0.002, 0.035, velocity * 0.45, 0.0001, 0.03);
+
+      oscMain.connect(gainMain);
+      oscOvertone.connect(gainOvertone);
+      gainMain.connect(filter);
+      gainOvertone.connect(filter);
+      filter.connect(this.masterGain);
+
+      if (sendToDelay && this.delayBus) {
+        const sendGain = this.ctx.createGain();
+        sendGain.gain.setValueAtTime(0.18, t);
+        filter.connect(sendGain);
+        sendGain.connect(this.delayBus);
+      }
+
+      oscMain.start(t);
+      oscOvertone.start(t);
+      const stopTime = t + duration + 0.1;
+      oscMain.stop(stopTime);
+      oscOvertone.stop(stopTime);
     } catch (e) {}
   }
 
+  // Campanas celestiales cristalinas con micro-detuning y cola reverberante
+  playCelestialBell(freq = 659.25, duration = 1.1, velocity = 0.20, shimmer = true) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const bellGain = this.ctx.createGain();
+
+      osc1.type = 'sine';
+      osc2.type = 'sine';
+
+      osc1.frequency.setValueAtTime(freq, t);
+      osc2.frequency.setValueAtTime(freq * 1.0025, t); // Micro-detuning armónico
+
+      this.applyEnvelope(bellGain.gain, t, 0.006, 0.35, velocity, 0.02, duration);
+
+      osc1.connect(bellGain);
+      osc2.connect(bellGain);
+      bellGain.connect(this.masterGain);
+
+      if (shimmer && this.delayBus) {
+        const sendGain = this.ctx.createGain();
+        sendGain.gain.setValueAtTime(0.32, t);
+        bellGain.connect(sendGain);
+        sendGain.connect(this.delayBus);
+      }
+
+      osc1.start(t);
+      osc2.start(t);
+      const stopTime = t + duration + 0.3;
+      osc1.stop(stopTime);
+      osc2.stop(stopTime);
+    } catch (e) {}
+  }
+
+  // =========================================================
+  // PRESETS DE INTERACCIÓN: SOBRES, JUEGOS Y BOTONES
+  // =========================================================
+
+  // 1. ABRIR SOBRE / CARTA / REGALO (Papel de seda + arpegio de campanas celestiales)
+  playEnvelopeOpen() {
+    haptic.medium();
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+
+      // Despliegue de papel
+      const n = this.ctx.createBufferSource();
+      n.buffer = this.createNoiseBuffer(0.18);
+      if (n.buffer) {
+        const nf = this.ctx.createBiquadFilter();
+        nf.type = 'bandpass';
+        nf.frequency.setValueAtTime(1400, t);
+        nf.Q.setValueAtTime(1.5, t);
+        const ng = this.ctx.createGain();
+        this.applyEnvelope(ng.gain, t, 0.005, 0.12, 0.18, 0.0001, 0.05);
+        n.connect(nf);
+        nf.connect(ng);
+        ng.connect(this.masterGain);
+        n.start(t);
+        n.stop(t + 0.2);
+      }
+
+      // Arpegio ascendente cristalino (440Hz -> 880Hz)
+      const chordNotes = [440.00, 554.37, 659.25, 880.00];
+      chordNotes.forEach((freq, idx) => {
+        const delayMs = idx * 75;
+        setTimeout(() => {
+          this.playCelestialBell(freq, 1.2, 0.18 - idx * 0.02, true);
+          this.playMarimbaNote(freq, 0.45, 0.12, false);
+        }, delayMs);
+      });
+    } catch (e) {}
+  }
+
+  playEnvelope() {
+    this.playEnvelopeOpen();
+  }
+
+  // 2. COMPLETAR JUEGO / PROPUESTA ACEPTADA (Acorde celestial mayor triunfal + marimba)
+  playGameComplete() {
+    haptic.success();
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    try {
+      const fanfareNotes = [
+        { f: 523.25, delay: 0, dur: 0.8 },  // C5
+        { f: 659.25, delay: 90, dur: 0.9 }, // E5
+        { f: 783.99, delay: 180, dur: 1.0 },// G5
+        { f: 987.77, delay: 290, dur: 1.2 },// B5
+        { f: 1046.50, delay: 410, dur: 1.8 } // C6
+      ];
+
+      fanfareNotes.forEach(({ f, delay, dur }) => {
+        setTimeout(() => {
+          this.playCelestialBell(f, dur, 0.22, true);
+          this.playMarimbaNote(f, 0.5, 0.15, false);
+        }, delay);
+      });
+
+      // Calidez en el bajo
+      setTimeout(() => {
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'triangle';
+        subOsc.frequency.setValueAtTime(261.63, t); // C4
+        this.applyEnvelope(subGain.gain, t, 0.02, 0.8, 0.22, 0.01, 0.6);
+        subOsc.connect(subGain);
+        subGain.connect(this.masterGain);
+        subOsc.start(t);
+        subOsc.stop(t + 1.5);
+      }, 420);
+    } catch (e) {}
+  }
+
+  playVictory() {
+    this.playGameComplete();
+  }
+
+  // 3. PRESIONAR BOTÓN (Gota de marimba acústica limpia y aterciopelada)
+  playButtonClick() {
+    haptic.light();
+    if (this.isMuted) return;
+    this.playMarimbaNote(587.33, 0.22, 0.24, false); // D5 suave
+  }
+
+  playButton() {
+    this.playButtonClick();
+  }
+
+  // 4. PASO DE ESTRELLA O AVANCE DE NIVEL (Pentatónica suave)
+  playStarStep(stepIndex = 0) {
+    haptic.light();
+    if (this.isMuted) return;
+    const scale = [440.00, 493.88, 554.37, 659.25, 739.99, 880.00, 987.77, 1108.73];
+    const idx = Math.abs(stepIndex) % scale.length;
+    const freq = scale[idx];
+    this.playCelestialBell(freq, 0.7, 0.20, true);
+    this.playMarimbaNote(freq, 0.35, 0.16, false);
+  }
+
+  // 5. ACORDE ARMÓNICO COMPLETO
+  playHarmonicChord(rootFreq = 440, type = 'maj9') {
+    if (this.isMuted) return;
+    let intervals = [1, 1.25, 1.5, 1.875];
+    if (type === 'maj9') intervals = [1, 1.25, 1.5, 1.875, 2.25];
+    if (type === 'sus2') intervals = [1, 1.125, 1.5, 2.0];
+
+    intervals.forEach((ratio, i) => {
+      const f = rootFreq * ratio;
+      setTimeout(() => {
+        this.playCelestialBell(f, 1.2, 0.16 - i * 0.02, true);
+      }, i * 35);
+    });
+  }
+
+  // ==========================================
+  // EFECTOS MEJORADOS (COMPATIBILIDAD RETROACTIVA)
+  // ==========================================
+  playPop() {
+    this.playButtonClick();
+  }
+
   playDodge() {
-    this.vibrate(20);
+    haptic.error();
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
@@ -506,126 +765,66 @@ class SoundManager {
       const gain = this.ctx.createGain();
       osc.type = 'triangle';
       const now = this.ctx.currentTime;
-      osc.frequency.setValueAtTime(400, now);
-      osc.frequency.linearRampToValueAtTime(200, now + 0.12);
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.linearRampToValueAtTime(220, now + 0.12);
 
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      this.applyEnvelope(gain.gain, now, 0.005, 0.10, 0.16, 0.0001, 0.03);
 
       osc.connect(gain);
       gain.connect(this.masterGain);
       osc.start(now);
-      osc.stop(now + 0.13);
+      osc.stop(now + 0.14);
     } catch (e) {}
   }
 
   playChime() {
-    this.vibrate(25);
+    haptic.medium();
     if (this.isMuted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    try {
-      const notes = [523.25, 659.25, 783.99, 1046.50];
-      const now = this.ctx.currentTime;
-
-      notes.forEach((freq, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        const noteTime = now + idx * 0.07;
-        osc.frequency.setValueAtTime(freq, noteTime);
-
-        gain.gain.setValueAtTime(0.12, noteTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.8);
-
-        osc.connect(gain);
-        gain.connect(this.masterGain);
-        osc.start(noteTime);
-        osc.stop(noteTime + 0.85);
-      });
-    } catch (e) {}
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, idx) => {
+      setTimeout(() => {
+        this.playCelestialBell(freq, 0.9, 0.18, true);
+      }, idx * 60);
+    });
   }
 
   playFanfare() {
-    this.vibrate([40, 60, 50, 70, 80]);
-    if (this.isMuted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    try {
-      const now = this.ctx.currentTime;
-      const notes = [
-        { f: 523.25, t: 0, d: 0.12 },
-        { f: 659.25, t: 0.12, d: 0.12 },
-        { f: 783.99, t: 0.24, d: 0.12 },
-        { f: 1046.50, t: 0.36, d: 0.45 }
-      ];
-
-      notes.forEach(n => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        const start = now + n.t;
-        osc.frequency.setValueAtTime(n.f, start);
-
-        gain.gain.setValueAtTime(0.25, start);
-        gain.gain.exponentialRampToValueAtTime(0.001, start + n.d);
-
-        osc.connect(gain);
-        gain.connect(this.masterGain);
-        osc.start(start);
-        osc.stop(start + n.d + 0.05);
-      });
-    } catch (e) {}
+    this.playGameComplete();
   }
 
   playLockClick() {
-    this.vibrate(60);
+    haptic.medium();
     if (this.isMuted) return;
     this.init();
     if (!this.ctx) return;
 
     try {
+      const t = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-      osc.type = 'square';
-      const now = this.ctx.currentTime;
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, t);
+      osc.frequency.exponentialRampToValueAtTime(110, t + 0.08);
 
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      this.applyEnvelope(gain.gain, t, 0.003, 0.07, 0.22, 0.0001, 0.02);
 
       osc.connect(gain);
       gain.connect(this.masterGain);
-      osc.start(now);
-      osc.stop(now + 0.13);
+      osc.start(t);
+      osc.stop(t + 0.10);
     } catch (e) {}
   }
 
   playMatchSuccess() {
-    this.vibrate([25, 40, 30]);
+    haptic.success();
     if (this.isMuted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    try {
-      const now = this.ctx.currentTime;
-      [659.25, 880, 1046.50].forEach((freq, i) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        const t = now + i * 0.08;
-        osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.18, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-        osc.connect(gain);
-        gain.connect(this.masterGain);
-        osc.start(t);
-        osc.stop(t + 0.35);
-      });
-    } catch (e) {}
+    const notes = [659.25, 880.00, 1046.50];
+    notes.forEach((freq, i) => {
+      setTimeout(() => {
+        this.playCelestialBell(freq, 0.7, 0.20, true);
+        this.playMarimbaNote(freq, 0.35, 0.15, false);
+      }, i * 70);
+    });
   }
 }
 
@@ -635,11 +834,13 @@ export const sound = new SoundManager();
 if (typeof window !== 'undefined') {
   const unlockAudio = () => {
     sound.init();
-    ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(evt => {
+    ['touchstart', 'touchend', 'mousedown', 'keydown', 'pointerdown'].forEach(evt => {
       window.removeEventListener(evt, unlockAudio);
     });
   };
-  ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(evt => {
+  ['touchstart', 'touchend', 'mousedown', 'keydown', 'pointerdown'].forEach(evt => {
     window.addEventListener(evt, unlockAudio, { once: true, passive: true });
   });
 }
+
+export { haptic } from './haptics';

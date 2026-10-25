@@ -110,7 +110,7 @@ export default function CoupleQuiz({ recipientName = 'Luyuromo' }) {
             Pregunta {currentStep + 1} de {QUESTIONS.length}
           </span>
 
-          <h3 className="text-xl md:text-2xl font-bold text-rose-900 font-dancing mb-6">
+          <h3 className="text-xl md:text-2xl font-bold text-rose-900 font-dancing mb-6 break-words">
             {currentQ.question}
           </h3>
 
@@ -120,7 +120,7 @@ export default function CoupleQuiz({ recipientName = 'Luyuromo' }) {
               <button
                 key={i}
                 onClick={() => handleAnswer(opt)}
-                className={`w-full p-3.5 rounded-2xl text-sm md:text-base font-semibold transition-all duration-300 flex items-center justify-between border cursor-pointer ${
+                className={`w-full min-h-[44px] p-3.5 rounded-2xl text-sm md:text-base font-semibold transition-all duration-300 flex items-center justify-between border cursor-pointer break-words ${
                   selectedOption === opt.text
                     ? 'bg-rose-500 text-white border-rose-600 shadow-lg scale-102'
                     : 'bg-white/80 text-rose-900 border-rose-200 hover:bg-white hover:border-rose-400 hover:shadow-md'

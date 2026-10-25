@@ -355,7 +355,7 @@ export default function CupidOracle({ recipientName, senderName, activeTab }) {
 
       {/* PANEL COMPLETO DE LA ENTIDAD / ORÁCULO INTELIGENTE */}
       {isOpen && (
-        <div className="glass-card-strong p-4 rounded-3xl shadow-2xl mb-2 w-80 sm:w-96 animate-pop-in border border-rose-300/90 bg-white/95 backdrop-blur-xl max-h-[85vh] flex flex-col">
+        <div className="glass-card-strong p-4 rounded-3xl shadow-2xl mb-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 animate-pop-in border border-rose-300/90 bg-white/95 backdrop-blur-xl max-h-[85vh] flex flex-col">
           
           {/* Cabecera del Oráculo */}
           <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-rose-200 flex-shrink-0">
@@ -379,7 +379,7 @@ export default function CupidOracle({ recipientName, senderName, activeTab }) {
                 sound.playPop();
                 setIsOpen(false);
               }}
-              className="text-xs text-rose-400 hover:text-rose-700 font-bold p-1 rounded-full hover:bg-rose-100 transition-colors"
+              className="text-sm text-rose-400 hover:text-rose-700 font-bold w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-rose-100 transition-colors cursor-pointer"
             >
               ✕
             </button>
@@ -695,7 +695,7 @@ export default function CupidOracle({ recipientName, senderName, activeTab }) {
           sound.playPop();
           setIsOpen(e => !e);
         }}
-        className="w-13 h-13 rounded-full bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-400 p-0.5 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white cursor-pointer group"
+        className="w-14 h-14 min-w-[48px] min-h-[48px] rounded-full bg-gradient-to-tr from-rose-500 via-pink-500 to-amber-400 p-0.5 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white cursor-pointer group"
         title="Cupido & Asistente Inteligente de Amor"
       >
         <div className="w-full h-full rounded-full bg-white/90 flex items-center justify-center relative overflow-hidden">

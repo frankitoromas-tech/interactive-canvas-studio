@@ -50,7 +50,10 @@ export default function LoveCoupons() {
             <div
               key={coupon.id}
               onClick={() => !isUsed && handleRedeem(coupon.id)}
-              className={`p-5 rounded-2xl border-2 border-dashed relative overflow-hidden transition-all duration-300 text-left flex flex-col justify-between ${
+              role="button"
+              tabIndex={isUsed ? -1 : 0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); !isUsed && handleRedeem(coupon.id); } }}
+              className={`p-5 rounded-2xl border-2 border-dashed relative overflow-hidden transition-all duration-300 text-left flex flex-col justify-between min-h-[44px] ${
                 isUsed
                   ? 'bg-gray-100/80 border-gray-300 opacity-60 cursor-default'
                   : 'bg-white/95 border-rose-300 shadow-md hover:shadow-xl hover:scale-102 active:scale-[0.97] transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer'
@@ -67,10 +70,10 @@ export default function LoveCoupons() {
 
               <div>
                 <span className="text-3xl mb-2 block">{coupon.icon}</span>
-                <h3 className="text-lg font-bold text-rose-900 font-outfit mb-1">
+                <h3 className="text-lg font-bold text-rose-900 font-outfit mb-1 break-words">
                   {coupon.title}
                 </h3>
-                <p className="text-xs text-rose-700 font-quicksand leading-relaxed">
+                <p className="text-xs text-rose-700 font-quicksand leading-relaxed break-words">
                   {coupon.desc}
                 </p>
               </div>

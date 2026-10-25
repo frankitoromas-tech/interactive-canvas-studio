@@ -73,7 +73,7 @@ export default function SystemDiagnosticModal({ onClose }) {
         {/* Botón de Cierre */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-rose-600 font-bold w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer"
+          className="absolute top-4 right-4 text-gray-400 hover:text-rose-600 font-bold w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-gray-100 flex items-center justify-center cursor-pointer"
         >
           ✕
         </button>
@@ -92,7 +92,7 @@ export default function SystemDiagnosticModal({ onClose }) {
         </div>
 
         {/* Panel de Métricas Rápidas */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-3 mb-6">
           <div className="bg-white/80 p-3 rounded-2xl border border-rose-200 text-center">
             <span className="text-xs text-gray-500 font-semibold block">Rendimiento</span>
             <span className={`text-xl font-bold font-outfit ${fps >= 50 ? 'text-emerald-600' : 'text-amber-600'}`}>

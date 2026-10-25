@@ -90,7 +90,7 @@ export default function MemoryGame() {
       </p>
 
       {/* Marcador */}
-      <div className="flex items-center justify-center gap-4 sm:gap-6 mb-6">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-6">
         <div className="glass-pill px-4 py-2 text-xs sm:text-sm font-bold text-rose-800">
           Movimientos: <span className="text-rose-600 font-outfit text-base">{moves}</span>
         </div>
@@ -99,7 +99,7 @@ export default function MemoryGame() {
         </div>
         <button
           onClick={initGame}
-          className="btn-secondary text-xs sm:text-sm py-1.5 px-3.5"
+          className="btn-secondary text-xs sm:text-sm min-h-[44px] py-1.5 px-3.5"
         >
           🔄 Reiniciar
         </button>
@@ -113,7 +113,10 @@ export default function MemoryGame() {
             <div
               key={card.id}
               onClick={() => handleCardClick(idx)}
-              className={`memory-card aspect-square ${isFlipped ? 'flipped' : ''}`}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(idx); } }}
+              className={`memory-card aspect-square min-w-[44px] min-h-[44px] ${isFlipped ? 'flipped' : ''}`}
             >
               <div className="memory-card-inner">
                 <div className="memory-card-back">

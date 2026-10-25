@@ -210,7 +210,7 @@ export default function TimeCapsule({ recipientName = 'Luyuromo', senderName = '
               </p>
 
               {/* Contadores de Tiempo */}
-              <div className="grid grid-cols-4 gap-2 sm:gap-4 w-full max-w-md mb-8">
+              <div className="grid grid-cols-4 gap-1.5 sm:gap-4 w-full max-w-md mb-8">
                 <div className="bg-white/10 backdrop-blur p-3 rounded-2xl border border-white/10 flex flex-col items-center">
                   <span className="text-2xl sm:text-4xl font-bold font-outfit text-white">{timeLeft.days}</span>
                   <span className="text-[10px] sm:text-xs text-rose-300 uppercase font-semibold">Días</span>
@@ -295,12 +295,12 @@ export default function TimeCapsule({ recipientName = 'Luyuromo', senderName = '
               </div>
 
               <div className="p-6 bg-white rounded-2xl border border-amber-200/80 shadow-inner mb-6">
-                <p className="text-lg sm:text-xl font-dancing text-gray-800 font-bold leading-relaxed whitespace-pre-line">
+                <p className="text-lg sm:text-xl font-dancing text-gray-800 font-bold leading-relaxed whitespace-pre-line break-words" style={{ overflowWrap: 'break-word', hyphens: 'auto' }}>
                   {capsuleData.message}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-amber-200">
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-amber-200">
                 <div>
                   <span className="text-xs text-gray-400 block font-semibold">Para:</span>
                   <span className="text-xl font-bold text-rose-700 font-pacifico">{capsuleData.recipient}</span>
@@ -319,7 +319,7 @@ export default function TimeCapsule({ recipientName = 'Luyuromo', senderName = '
               <div className="mt-8 text-center">
                 <button
                   onClick={handleResetCapsule}
-                  className="btn-secondary text-xs py-2 px-5"
+                  className="btn-secondary text-xs min-h-[44px] py-2 px-5"
                 >
                   📝 Crear Otra Cápsula del Tiempo
                 </button>

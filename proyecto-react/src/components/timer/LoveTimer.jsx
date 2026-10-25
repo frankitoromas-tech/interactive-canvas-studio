@@ -95,7 +95,7 @@ export default function LoveTimer({ recipientName = 'Luyuromo' }) {
       </div>
 
       {/* Total en Segundos Latentes */}
-      <div className="glass-pill px-6 py-2.5 mb-6 text-xs sm:text-sm text-rose-800 font-semibold border border-rose-200">
+      <div className="glass-pill px-4 py-2.5 mb-6 text-xs sm:text-sm text-rose-800 font-semibold border border-rose-200 break-words max-w-full text-center">
         💖 Más de <strong className="text-rose-600 font-outfit font-bold">{timeTogether.totalSeconds.toLocaleString()}</strong> segundos de pura felicidad
       </div>
 
@@ -106,7 +106,7 @@ export default function LoveTimer({ recipientName = 'Luyuromo' }) {
             sound.playPop();
             setIsEditing(e => !e);
           }}
-          className="text-xs text-rose-700 underline font-semibold cursor-pointer"
+          className="text-xs text-rose-700 underline font-semibold cursor-pointer min-h-[44px] py-2 px-3 inline-flex items-center justify-center"
         >
           {isEditing ? 'Cancelar Edición' : '📅 Cambiar Nuestra Fecha de Inicio'}
         </button>
@@ -119,7 +119,7 @@ export default function LoveTimer({ recipientName = 'Luyuromo' }) {
               onChange={(e) => setTempDate(e.target.value)}
               className="px-3 py-1.5 rounded-lg border border-rose-300 text-xs bg-white"
             />
-            <button type="submit" className="btn-primary text-xs py-1.5 px-3">
+            <button type="submit" className="btn-primary text-xs min-h-[44px] py-1.5 px-3">
               Guardar
             </button>
           </form>

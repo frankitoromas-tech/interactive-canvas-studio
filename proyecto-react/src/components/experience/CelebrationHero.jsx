@@ -108,7 +108,7 @@ export default function CelebrationHero({ recipientName = 'Luyuromo', onOpenCert
 
           <button
             onClick={toggleRoseRain}
-            className="btn-secondary text-xs sm:text-sm"
+            className="btn-secondary text-xs sm:text-sm min-h-[44px]"
           >
             <span>{rainingRoses ? `🌹 ${t('hero.btnRosesStop', {}, 'Detener Rosas')}` : `🌹 ${t('hero.btnRosesRain', {}, 'Lluvia de Rosas')}`}</span>
           </button>

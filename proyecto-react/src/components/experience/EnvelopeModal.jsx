@@ -62,7 +62,7 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
             <span className="text-amber-400 animate-pulse">✨</span>
           </div>
           
-          <h2 className="text-3xl sm:text-5xl font-bold text-white font-pacifico drop-shadow-lg tracking-wide">
+          <h2 className="text-3xl sm:text-5xl font-bold text-white font-pacifico drop-shadow-lg tracking-wide break-words max-w-full">
             {t('envelope.title', {}, 'Para ti')}, {recipientName}
           </h2>
           
@@ -84,7 +84,7 @@ export default function EnvelopeModal({ recipientName = 'Luyuromo', onOpen }) {
           onMouseLeave={handlePointerLeave}
           className="relative mx-auto cursor-pointer select-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97]"
           style={{
-            width: '330px',
+            width: 'min(330px, 92vw)',
             height: '230px',
             maxWidth: '92vw',
             perspective: '1000px',

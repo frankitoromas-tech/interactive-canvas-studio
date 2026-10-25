@@ -89,13 +89,13 @@ export default function ShareModal({ recipientName = 'Luyuromo', senderName = 'T
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-rose-600 text-xl font-bold cursor-pointer w-8 h-8 flex items-center justify-center rounded-full bg-gray-100"
+          className="absolute top-4 right-4 text-gray-500 hover:text-rose-600 text-xl font-bold cursor-pointer w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-gray-100"
         >
           ✕
         </button>
 
         <span className="text-3xl mb-1">📲</span>
-        <h3 className="text-2xl md:text-3xl font-bold text-rose-900 font-pacifico mb-1">
+        <h3 className="text-2xl md:text-3xl font-bold text-rose-900 font-pacifico mb-1 break-words max-w-full">
           Compartir con {recipientName}
         </h3>
         <p className="text-xs md:text-sm text-rose-700 font-quicksand mb-6">

@@ -57,7 +57,7 @@ export default function LoveLock({ recipientName = 'Luyuromo', senderName = 'Tu 
       </p>
 
       {/* Visual del Candado 3D */}
-      <div className="relative my-4 flex flex-col items-center select-none cursor-pointer" onClick={handleToggleLock}>
+      <div className="relative my-4 flex flex-col items-center select-none cursor-pointer" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleLock(); } }} onClick={handleToggleLock}>
         
         {/* Grillete */}
         <div className={`love-lock-shackle ${isLocked ? 'locked' : 'unlocked'}`} />
@@ -106,7 +106,7 @@ export default function LoveLock({ recipientName = 'Luyuromo', senderName = 'Tu 
       <div className="mt-8 pt-6 border-t border-amber-200/60 w-full max-w-sm">
         <button
           onClick={() => setIsEditing(e => !e)}
-          className="text-xs text-amber-800 underline font-semibold cursor-pointer"
+          className="text-xs text-amber-800 underline font-semibold cursor-pointer min-h-[44px] py-2 px-3 inline-flex items-center justify-center"
         >
           {isEditing ? 'Ocultar Personalización' : '⚙️ Personalizar Grabado del Candado'}
         </button>

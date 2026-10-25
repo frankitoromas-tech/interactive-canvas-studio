@@ -194,7 +194,7 @@ export default function PolaroidGallery() {
         {photos.length > DEFAULT_CATS.length && (
           <button
             onClick={handleResetPhotos}
-            className="text-xs text-rose-600 hover:text-rose-800 py-1.5 px-3 rounded-full hover:bg-rose-50 cursor-pointer"
+            className="text-xs text-rose-600 hover:text-rose-800 min-h-[44px] py-1.5 px-3 rounded-full hover:bg-rose-50 cursor-pointer inline-flex items-center justify-center"
           >
             Restaurar Gatitos
           </button>
@@ -229,7 +229,7 @@ export default function PolaroidGallery() {
               <button
                 onClick={(e) => handleDeletePhoto(item.id, e)}
                 title="Eliminar foto"
-                className="absolute top-2 right-2 z-20 bg-rose-600/90 text-white text-xs w-6 h-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-rose-700 shadow-md"
+                className="absolute top-2 right-2 z-20 bg-rose-600/90 text-white text-xs w-11 h-11 min-w-[44px] min-h-[44px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-rose-700 shadow-md cursor-pointer"
               >
                 ✕
               </button>
@@ -258,7 +258,7 @@ export default function PolaroidGallery() {
               <div className="shine-overlay" />
             </div>
 
-            <p className="text-sm font-dancing text-rose-950 font-bold line-clamp-2 px-1 text-center">
+            <p className="text-sm font-dancing text-rose-950 font-bold line-clamp-2 px-1 text-center break-words">
               {item.caption}
             </p>
             <span className="text-[10px] text-gray-400 font-quicksand font-semibold block mt-1">

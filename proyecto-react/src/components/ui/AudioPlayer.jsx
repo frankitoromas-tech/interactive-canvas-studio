@@ -144,7 +144,7 @@ export default function AudioPlayer() {
         aria-label="Reproductor de música flotante"
         className="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 z-40 flex items-center gap-2 select-none font-outfit"
       >
-        <div className="glass-card-strong px-3 py-2 rounded-2xl shadow-xl flex items-center gap-2.5 border border-rose-300/80 bg-white/95 backdrop-blur-xl">
+        <div className="glass-card-strong px-3 py-2 rounded-2xl shadow-xl flex items-center gap-2.5 border border-rose-300/80 bg-white/95 backdrop-blur-xl max-w-[calc(100vw-24px)]">
           
           {/* Botón Play / Pausa */}
           <button
@@ -189,7 +189,7 @@ export default function AudioPlayer() {
               sound.playPop();
               sound.nextTrack();
             }}
-            className="p-1.5 rounded-lg text-rose-700 hover:bg-rose-100/80 transition-colors text-xs cursor-pointer"
+            className="min-w-[44px] min-h-[44px] p-1.5 rounded-lg text-rose-700 hover:bg-rose-100/80 transition-colors text-sm flex items-center justify-center cursor-pointer"
             title="Siguiente pista"
           >
             ⏭️
@@ -201,7 +201,7 @@ export default function AudioPlayer() {
               sound.playPop();
               setIsModalOpen(true);
             }}
-            className="p-1.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-pink-950 font-bold text-[11px] flex items-center gap-1 transition-all border border-pink-300/80 shadow-xs cursor-pointer"
+            className="min-h-[44px] min-w-[44px] px-2.5 py-1.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-pink-950 font-bold text-xs flex items-center justify-center gap-1 transition-all border border-pink-300/80 shadow-xs cursor-pointer"
             title="Gestionar lista de música y subir canciones originales"
           >
             <span>🎼</span>

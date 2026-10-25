@@ -151,8 +151,8 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
 
         {/* Título Principal en Tipografía de Caligrafía Romana */}
         <h1
-          className="text-3xl sm:text-5xl font-bold text-rose-950 mb-2 font-pacifico tracking-wide"
-          style={{ textShadow: '0 2px 10px rgba(112, 11, 43, 0.15)' }}
+          className="text-3xl sm:text-5xl font-bold text-rose-950 mb-2 font-pacifico tracking-wide break-words max-w-full"
+          style={{ textShadow: '0 2px 10px rgba(112, 11, 43, 0.15)', overflowWrap: 'break-word' }}
         >
           {recipientName},
         </h1>
@@ -189,6 +189,8 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
               className="btn-primary font-bold shadow-2xl relative cursor-pointer"
               style={{
                 transform: `scale3d(${yesScale}, ${yesScale}, 1) translate3d(0, 0, 0)`,
+                maxWidth: 'min(90vw, 400px)',
+                minHeight: '44px',
                 padding: `${14 + Math.min(noCount * 2.5, 14)}px ${32 + Math.min(noCount * 5, 26)}px`,
                 fontSize: `${1.1 + Math.min(noCount * 0.06, 0.45)}rem`,
                 zIndex: 30,
@@ -218,6 +220,7 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
               fontSize: `${Math.max(0.8, 0.95 - noCount * 0.035)}rem`,
               padding: '8px 18px',
               maxWidth: '250px',
+              minHeight: '44px',
               zIndex: 20,
               pointerEvents: 'auto',
               transition: isDodging 

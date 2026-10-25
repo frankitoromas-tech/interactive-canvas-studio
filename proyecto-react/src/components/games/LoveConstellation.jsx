@@ -173,7 +173,7 @@ export default function LoveConstellation() {
             <button
               key={idx}
               onClick={() => handleStarClick(idx)}
-              className="absolute -translate-x-1/2 -translate-y-1/2 group p-2 cursor-pointer transition-transform hover:scale-125 focus:outline-none"
+              className="absolute -translate-x-1/2 -translate-y-1/2 group p-2 min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer transition-transform hover:scale-125 focus-visible:ring-2 focus-visible:ring-rose-400 rounded-full"
               style={{ left: `${star.x}%`, top: `${star.y}%` }}
             >
               <div
@@ -205,7 +205,7 @@ export default function LoveConstellation() {
       <div className="mt-4 flex items-center gap-3">
         <button
           onClick={handleReset}
-          className="text-xs text-rose-600 hover:text-rose-800 font-medium py-1 px-3 rounded-full hover:bg-rose-50 cursor-pointer"
+          className="text-xs text-rose-600 hover:text-rose-800 font-medium min-h-[44px] py-1 px-3 rounded-full hover:bg-rose-50 cursor-pointer inline-flex items-center justify-center"
         >
           🔄 Reiniciar Estrellas
         </button>

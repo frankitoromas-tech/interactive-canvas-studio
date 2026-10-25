@@ -63,13 +63,13 @@ Gracias por tu verdad, por coincidir en este rincón del tiempo y por regalarme 
       </div>
 
       {/* Barra de Acciones de la Carta */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
         <button
           onClick={() => {
             sound.playPop();
             setIsTypewriter(t => !t);
           }}
-          className={`btn-secondary text-xs py-1.5 px-3.5 ${
+          className={`btn-secondary text-xs min-h-[44px] py-1.5 px-3.5 ${
             isTypewriter ? 'bg-rose-500 text-white border-rose-500 font-bold' : ''
           }`}
         >
@@ -78,7 +78,7 @@ Gracias por tu verdad, por coincidir en este rincón del tiempo y por regalarme 
 
         <button
           onClick={handleCopy}
-          className="btn-secondary text-xs py-1.5 px-3.5"
+          className="btn-secondary text-xs min-h-[44px] py-1.5 px-3.5"
         >
           {copied ? '✨ ¡Guardada en el alma!' : '📋 Copiar Carta'}
         </button>
@@ -148,12 +148,12 @@ Gracias por tu verdad, por coincidir en este rincón del tiempo y por regalarme 
         )}
 
         {/* Encabezado */}
-        <h3 className="text-2xl sm:text-3xl font-bold text-rose-950 font-pacifico mb-6 text-left">
+        <h3 className="text-2xl sm:text-3xl font-bold text-rose-950 font-pacifico mb-6 text-left break-words max-w-full">
           Mi queridísima {recipientName},
         </h3>
 
         {/* Texto de la Carta */}
-        <p className="text-base sm:text-xl text-gray-800 font-dancing leading-relaxed whitespace-pre-line text-left font-semibold">
+        <p className="text-base sm:text-xl text-gray-800 font-dancing leading-relaxed whitespace-pre-line text-left font-semibold break-words" style={{ overflowWrap: 'break-word', hyphens: 'auto' }}>
           {displayedText}
           {isTypewriter && displayedText.length < letterBody.length && (
             <span className="inline-block w-1.5 h-5 bg-rose-500 ml-1 animate-pulse" />

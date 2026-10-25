@@ -56,7 +56,7 @@ function AppContent() {
   });
 
   const [theme, setTheme] = useState(() => {
-    return urlParams.theme || safeStorage.getItem('sv_theme') || 'romantic-pink';
+    return urlParams.theme || safeStorage.getItem('sv_theme') || 'rose-quartz-champagne';
   });
 
   // Flujo de la Experiencia

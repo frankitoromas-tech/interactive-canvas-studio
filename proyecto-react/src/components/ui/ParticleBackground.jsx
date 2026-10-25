@@ -38,8 +38,38 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
     resize();
     window.addEventListener('resize', resize);
 
-    // Paletas temáticas para degradados y estelas cósmicas
+    // Paletas temáticas ultra-premium para degradados y estelas cósmicas
     const themePalettes = {
+      'aurora-obsidian': {
+        bokehCore: 'rgba(16, 185, 129, ',
+        bokehGlow: 'rgba(139, 92, 246, 0)',
+        heartFill: 'rgba(16, 185, 129, ',
+        heartShadow: '#8b5cf6',
+        starFill: 'rgba(255, 255, 255, ',
+        starShadow: '#10b981',
+        trailGradient: ['rgba(16, 185, 129, ', 'rgba(139, 92, 246, '],
+        dustColor: 'rgba(6, 182, 212, '
+      },
+      'rose-quartz-champagne': {
+        bokehCore: 'rgba(244, 63, 94, ',
+        bokehGlow: 'rgba(217, 119, 6, 0)',
+        heartFill: 'rgba(244, 63, 94, ',
+        heartShadow: '#fda4af',
+        starFill: 'rgba(255, 255, 255, ',
+        starShadow: '#fef08a',
+        trailGradient: ['rgba(244, 63, 94, ', 'rgba(217, 119, 6, '],
+        dustColor: 'rgba(251, 191, 36, '
+      },
+      'deep-velvet-wine': {
+        bokehCore: 'rgba(225, 29, 72, ',
+        bokehGlow: 'rgba(245, 158, 11, 0)',
+        heartFill: 'rgba(225, 29, 72, ',
+        heartShadow: '#f59e0b',
+        starFill: 'rgba(255, 241, 242, ',
+        starShadow: '#fcd34d',
+        trailGradient: ['rgba(225, 29, 72, ', 'rgba(245, 158, 11, '],
+        dustColor: 'rgba(253, 164, 175, '
+      },
       'romantic-pink': {
         bokehCore: 'rgba(254, 205, 211, ',
         bokehGlow: 'rgba(244, 63, 94, 0)',
@@ -229,15 +259,18 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
         const effectiveRadius = b.radius * (1 + beatBoost * 0.18);
         const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, effectiveRadius);
 
-        if (theme === 'golden' || b.isGold) {
-          grad.addColorStop(0, `rgba(253, 230, 138, ${b.alpha * 1.25})`);
-          grad.addColorStop(1, 'rgba(253, 230, 138, 0)');
-        } else if (theme === 'midnight') {
-          grad.addColorStop(0, `rgba(168, 85, 247, ${b.alpha * 1.15})`);
-          grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        if (theme === 'aurora-obsidian' || theme === 'midnight') {
+          grad.addColorStop(0, `rgba(16, 185, 129, ${b.alpha * 1.3})`);
+          grad.addColorStop(1, 'rgba(139, 92, 246, 0)');
+        } else if (theme === 'deep-velvet-wine') {
+          grad.addColorStop(0, `rgba(225, 29, 72, ${b.alpha * 1.4})`);
+          grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        } else if (theme === 'golden' || b.isGold) {
+          grad.addColorStop(0, `rgba(217, 119, 6, ${b.alpha * 1.25})`);
+          grad.addColorStop(1, 'rgba(217, 119, 6, 0)');
         } else {
-          grad.addColorStop(0, `rgba(254, 205, 211, ${b.alpha * 1.35})`);
-          grad.addColorStop(1, 'rgba(254, 205, 211, 0)');
+          grad.addColorStop(0, `rgba(244, 63, 94, ${b.alpha * 1.35})`);
+          grad.addColorStop(1, 'rgba(244, 63, 94, 0)');
         }
 
         ctx.fillStyle = grad;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { confetti } from '../../utils/confettiEngine';
+import { haptic } from '../../utils/haptics';
 import { safeStorage, sanitizeInput } from '../../utils/security';
 
 export default function LoveLock({ recipientName = 'Luyuromo', senderName = 'Tu Amor' }) {
@@ -22,6 +23,7 @@ export default function LoveLock({ recipientName = 'Luyuromo', senderName = 'Tu 
 
   const handleToggleLock = () => {
     if (!isLocked) {
+      haptic.medium();
       sound.playLockClick();
       confetti.cannonCelebration();
       setIsLocked(true);
@@ -29,6 +31,7 @@ export default function LoveLock({ recipientName = 'Luyuromo', senderName = 'Tu 
       safeStorage.setItem('sv_lock_initials', initials);
       safeStorage.setItem('sv_lock_date', date);
     } else {
+      haptic.light();
       sound.playPop();
       setIsLocked(false);
       safeStorage.setItem('sv_love_locked', 'false');

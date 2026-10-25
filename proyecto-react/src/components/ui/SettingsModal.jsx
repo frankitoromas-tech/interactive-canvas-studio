@@ -118,32 +118,52 @@ export default function SettingsModal({
             <label className="text-xs font-bold text-rose-900 block mb-2">
               {t('settings.themeLabel', {}, 'Tema Visual & Atmósfera:')}
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2">
               {[
-                { id: 'romantic-pink', name: '🌸 Rosa Romántico', desc: 'Clásico y dulce' },
-                { id: 'midnight', name: '🌌 Noche Estrellada', desc: 'Místico y profundo' },
-                { id: 'golden', name: '✨ Oro y Atardecer', desc: 'Cálido y brillante' },
-                { id: 'enchanted', name: '🌿 Bosque Encantado', desc: 'Fresco y primaveral' }
-              ].map((thm) => (
-                <button
-                  type="button"
-                  key={thm.id}
-                  onClick={() => {
-                    sound.playPop();
-                    setSelectedTheme(thm.id);
-                  }}
-                  className={`p-2 rounded-xl text-xs font-medium transition-all text-left border ${
-                    selectedTheme === thm.id
-                      ? 'border-rose-500 bg-rose-500 text-white font-bold shadow-md'
-                      : 'border-rose-200 bg-white/80 text-rose-900 hover:bg-rose-50'
-                  }`}
-                >
-                  <div>{thm.name}</div>
-                  <div className={`text-[10px] ${selectedTheme === thm.id ? 'text-rose-100' : 'text-gray-500'}`}>
-                    {thm.desc}
-                  </div>
-                </button>
-              ))}
+                {
+                  id: 'aurora-obsidian',
+                  name: '🌌 Aurora Obsidian',
+                  desc: 'Esmeralda #10B981 & Violeta #8B5CF6 en Obsidiana #0B0F19',
+                  aliases: ['midnight', 'enchanted']
+                },
+                {
+                  id: 'rose-quartz-champagne',
+                  name: '🌸 Rose Quartz & Champagne',
+                  desc: 'Oro Suave #D97706 & Rosa Seda #F43F5E en #FFF1F2',
+                  aliases: ['romantic-pink', 'golden']
+                },
+                {
+                  id: 'deep-velvet-wine',
+                  name: '🍷 Deep Velvet Wine',
+                  desc: 'Rubí #E11D48 & Oro Champaña #F59E0B en #1A0B14',
+                  aliases: ['velvet', 'wine']
+                }
+              ].map((thm) => {
+                const isSelected = selectedTheme === thm.id || (thm.aliases && thm.aliases.includes(selectedTheme));
+                return (
+                  <button
+                    type="button"
+                    key={thm.id}
+                    onClick={() => {
+                      sound.playPop();
+                      setSelectedTheme(thm.id);
+                    }}
+                    className={`p-2.5 rounded-xl text-xs font-medium transition-all text-left border ${
+                      isSelected
+                        ? 'border-rose-500 bg-rose-500 text-white font-bold shadow-md'
+                        : 'border-rose-200 bg-white/80 text-rose-900 hover:bg-rose-50'
+                    }`}
+                  >
+                    <div className="font-bold flex items-center justify-between">
+                      <span>{thm.name}</span>
+                      {isSelected && <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">Activo</span>}
+                    </div>
+                    <div className={`text-[10px] mt-0.5 ${isSelected ? 'text-rose-100' : 'text-gray-500'}`}>
+                      {thm.desc}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

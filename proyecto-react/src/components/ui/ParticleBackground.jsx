@@ -342,11 +342,14 @@ export default function ParticleBackground({ theme = 'romantic-pink' }) {
 
         drawHeart(ctx, h.x, h.y, h.size);
 
-        if (theme === 'midnight') {
-          ctx.fillStyle = `rgba(216, 180, 254, ${dynAlpha * 0.65})`;
-          ctx.shadowColor = '#c084fc';
+        if (theme === 'aurora-obsidian' || theme === 'midnight') {
+          ctx.fillStyle = `rgba(16, 185, 129, ${dynAlpha * 0.75})`;
+          ctx.shadowColor = '#8b5cf6';
+        } else if (theme === 'deep-velvet-wine') {
+          ctx.fillStyle = `rgba(225, 29, 72, ${dynAlpha * 0.75})`;
+          ctx.shadowColor = '#f59e0b';
         } else if (theme === 'golden' || h.isGold) {
-          ctx.fillStyle = `rgba(253, 230, 138, ${dynAlpha * 0.75})`;
+          ctx.fillStyle = `rgba(217, 119, 6, ${dynAlpha * 0.75})`;
           ctx.shadowColor = '#fbbf24';
         } else {
           ctx.fillStyle = `rgba(244, 63, 94, ${dynAlpha * 0.65})`;

@@ -287,7 +287,13 @@ export default function PolaroidGallery() {
             <img
               src={selectedPhoto.url}
               alt={selectedPhoto.caption}
+              decoding="async"
               className="w-full max-h-[60vh] object-cover rounded-2xl mb-4 shadow-sm"
+              onError={(e) => {
+                if (selectedPhoto.fallbackUrl && e.currentTarget.src !== selectedPhoto.fallbackUrl) {
+                  e.currentTarget.src = selectedPhoto.fallbackUrl;
+                }
+              }}
             />
 
             {isEditingCaption ? (

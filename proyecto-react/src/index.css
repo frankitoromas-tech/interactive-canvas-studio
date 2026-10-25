@@ -7,93 +7,225 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700;800;900&family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap');
 
-:root {
-  /* Paleta Haute Couture: Rose Quartz & Deep Velvet Wine con Champagne Gold */
-  --bg-gradient: radial-gradient(130% 120% at 50% 0%, #fff7f9 0%, #fdecf2 28%, #fce2ea 55%, #fbcfe8 85%, #f472b6 100%);
-  --card-bg: rgba(255, 255, 255, 0.86);
-  --card-border: rgba(255, 255, 255, 0.95);
-  --card-shadow: 0 32px 84px -12px rgba(112, 11, 43, 0.18), 0 12px 32px -6px rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-  
-  --primary-accent: #be123c;
-  --primary-hover: #9f1239;
-  --secondary-accent: #f43f5e;
-  --wine-deep: #4a0418;
-  --wine-velvet: #700b2b;
-  --champagne-gold: #d4af37;
-  --champagne-light: #fef3c7;
-  --rose-quartz: #f9d5e5;
-  --rose-quartz-light: #fff0f5;
-  
-  --text-title: #4a0418;
-  --text-subtitle: #881337;
-  --text-body: #2e151b;
-  --gold-glow: rgba(212, 175, 55, 0.45);
-  
-  /* Curvas de Rebote Físico (Spring Physics) */
-  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --spring-soft: cubic-bezier(0.16, 1, 0.3, 1);
-  --spring-snappy: cubic-bezier(0.2, 0.8, 0.2, 1.15);
-  --spring-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
-}
+/* =========================================================
+   SISTEMA DE PALETAS ULTRA-PREMIUM & THEME ENGINE HAUTE COUTURE
+   Diseñado y unificado para Frank Vargas
+   
+   Soporte dinámico para 3 temas canónicos:
+     1. 'Aurora Obsidian' (fondos #0B0F19, esmeralda #10B981, violeta neón #8B5CF6)
+     2. 'Rose Quartz & Champagne' (fondos #FFF1F2, oro suave #D97706, rosa seda #F43F5E)
+     3. 'Deep Velvet Wine' (fondos #1A0B14, rubí #E11D48, oro champaña #F59E0B)
+   ========================================================= */
 
-[data-theme="midnight"] {
-  --bg-gradient: radial-gradient(130% 120% at 50% 0%, #1c0e28 0%, #14081c 40%, #0c0411 75%, #050107 100%);
-  --card-bg: rgba(28, 17, 42, 0.88);
-  --card-border: rgba(216, 180, 254, 0.35);
-  --card-shadow: 0 32px 84px -12px rgba(192, 132, 252, 0.25), 0 12px 32px -6px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
-  --primary-accent: #e879f9;
-  --primary-hover: #d946ef;
-  --secondary-accent: #f472b6;
-  --wine-deep: #2e0854;
-  --wine-velvet: #581c87;
-  --champagne-gold: #fde047;
-  --champagne-light: #fef08a;
-  --rose-quartz: #f5d0fe;
-  --rose-quartz-light: #fae8ff;
-  --text-title: #ffffff;
-  --text-subtitle: #f0abfc;
-  --text-body: #f1f5f9;
-  --gold-glow: rgba(253, 224, 71, 0.55);
-}
-
+/* ─────────────────────────────────────────────────────────────
+   TEMA BASE / DEFAULT: ROSE QUARTZ & CHAMPAGNE
+   Atmósfera Haute Couture de seda rosa cuarzo con acentos oro suave y rosa seda
+   ───────────────────────────────────────────────────────────── */
+:root,
+:root[data-theme="rose-quartz-champagne"],
+[data-theme="rose-quartz-champagne"],
+[data-theme="rose-quartz"],
+[data-theme="champagne"],
+[data-theme="romantic-pink"],
 [data-theme="golden"] {
-  --bg-gradient: radial-gradient(130% 120% at 50% 0%, #fffef7 0%, #fef8db 35%, #fef3c7 65%, #fde68a 100%);
-  --card-bg: rgba(255, 255, 255, 0.92);
-  --card-border: rgba(245, 158, 11, 0.45);
-  --card-shadow: 0 32px 84px -12px rgba(217, 119, 6, 0.22), 0 12px 32px -6px rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-  --primary-accent: #b45309;
-  --primary-hover: #92400e;
-  --secondary-accent: #f59e0b;
-  --wine-deep: #451a03;
-  --wine-velvet: #78350f;
-  --champagne-gold: #d97706;
-  --champagne-light: #fef3c7;
-  --rose-quartz: #fde68a;
-  --rose-quartz-light: #fef9c3;
-  --text-title: #451a03;
-  --text-subtitle: #78350f;
-  --text-body: #291e14;
-  --gold-glow: rgba(245, 158, 11, 0.65);
+  /* Core Tokens Unificados */
+  --theme-id:                     'rose-quartz-champagne';
+  --theme-name:                   'Rose Quartz & Champagne';
+  --theme-bg:                     #FFF1F2;
+  --theme-bg-gradient:            radial-gradient(130% 120% at 50% 0%, #FFF8F9 0%, #FFF1F2 30%, #FCE7F3 65%, #FBCFE8 95%, #F472B6 100%);
+  --theme-surface:                rgba(255, 255, 255, 0.88);
+  --theme-surface-strong:         rgba(255, 255, 255, 0.96);
+  --theme-surface-solid:          #FFFFFF;
+  --theme-border:                 rgba(244, 63, 94, 0.22);
+  --theme-border-glow:            rgba(217, 119, 6, 0.35);
+  --theme-shadow:                 0 32px 84px -12px rgba(112, 11, 43, 0.16), 0 12px 32px -6px rgba(217, 119, 6, 0.10);
+  --theme-accent-primary:         #F43F5E;
+  --theme-accent-primary-hover:   #E11D48;
+  --theme-accent-secondary:       #D97706;
+  --theme-accent-secondary-hover: #B45309;
+  --theme-accent-tertiary:        #FBBF24;
+  --theme-glow-primary:           rgba(244, 63, 94, 0.42);
+  --theme-glow-secondary:         rgba(217, 119, 6, 0.42);
+  --theme-glow-tertiary:          rgba(251, 191, 36, 0.40);
+  --theme-text-main:              #4C0519;
+  --theme-text-title:             #881337;
+  --theme-text-subtitle:          #9F1239;
+  --theme-text-muted:             rgba(76, 5, 25, 0.72);
+  --theme-transition:             background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+
+  /* Variables nativas San Valentín (proyecto-react) */
+  --bg-gradient:                  radial-gradient(130% 120% at 50% 0%, #FFF8F9 0%, #FFF1F2 30%, #FCE7F3 65%, #FBCFE8 95%, #F472B6 100%);
+  --card-bg:                      rgba(255, 255, 255, 0.88);
+  --card-border:                  rgba(244, 63, 94, 0.22);
+  --card-shadow:                  0 32px 84px -12px rgba(112, 11, 43, 0.16), 0 12px 32px -6px rgba(217, 119, 6, 0.10), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+  --primary-accent:               #F43F5E;
+  --primary-hover:                #E11D48;
+  --secondary-accent:             #D97706;
+  --wine-deep:                    #4C0519;
+  --wine-velvet:                  #881337;
+  --champagne-gold:               #D97706;
+  --champagne-light:              #FEF3C7;
+  --rose-quartz:                  #FECDD3;
+  --rose-quartz-light:            #FFF1F2;
+  --text-title:                   #881337;
+  --text-subtitle:                #9F1239;
+  --text-body:                    #4C0519;
+  --gold-glow:                    rgba(217, 119, 6, 0.42);
+
+  /* Variables puente Bóveda Estelar (cumplea-os) */
+  --fondo:                        #FFF1F2;
+  --obsidian:                     #FFE4E6;
+  --obsidian-surface:             #FFFFFF;
+  --amatista:                     #D97706;
+  --esmeralda:                    #059669;
+  --verde-neo:                    #059669;
+  --dorado:                       #D97706;
+  --rosa:                         #F43F5E;
+  --texto:                        #4C0519;
+  --glass:                        rgba(255, 255, 255, 0.88);
+  --glass-borde:                  rgba(244, 63, 94, 0.22);
+
+  /* Curvas de Rebote Físico (Spring Physics) */
+  --spring-bounce:                cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-soft:                  cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-snappy:                cubic-bezier(0.2, 0.8, 0.2, 1.15);
+  --spring-elastic:               cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --ease-spring:                  cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ─────────────────────────────────────────────────────────────
+   TEMA 1: AURORA OBSIDIAN
+   Atmósfera cósmica obsidiana con acentos esmeralda y violeta neón
+   ───────────────────────────────────────────────────────────── */
+:root[data-theme="aurora-obsidian"],
+[data-theme="aurora-obsidian"],
+[data-theme="aurora"],
+[data-theme="obsidian"],
+[data-theme="midnight"],
 [data-theme="enchanted"] {
-  --bg-gradient: radial-gradient(130% 120% at 50% 0%, #f2fcf6 0%, #e6f9ef 35%, #fce7f3 70%, #dcfce7 100%);
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --card-border: rgba(52, 211, 153, 0.45);
-  --card-shadow: 0 32px 84px -12px rgba(5, 150, 105, 0.2), 0 12px 32px -6px rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-  --primary-accent: #047857;
-  --primary-hover: #065f46;
-  --secondary-accent: #ec4899;
-  --wine-deep: #064e3b;
-  --wine-velvet: #065f46;
-  --champagne-gold: #10b981;
-  --champagne-light: #d1fae5;
-  --rose-quartz: #fbcfe8;
-  --rose-quartz-light: #fdf2f8;
-  --text-title: #064e3b;
-  --text-subtitle: #065f46;
-  --text-body: #1e293b;
-  --gold-glow: rgba(52, 211, 153, 0.55);
+  /* Core Tokens Unificados */
+  --theme-id:                     'aurora-obsidian';
+  --theme-name:                   'Aurora Obsidian';
+  --theme-bg:                     #0B0F19;
+  --theme-bg-gradient:            radial-gradient(130% 120% at 50% 0%, #161F33 0%, #0F172A 35%, #0B0F19 75%, #050811 100%);
+  --theme-surface:                rgba(15, 23, 42, 0.72);
+  --theme-surface-strong:         rgba(15, 23, 42, 0.92);
+  --theme-surface-solid:          #0F172A;
+  --theme-border:                 rgba(16, 185, 129, 0.22);
+  --theme-border-glow:            rgba(139, 92, 246, 0.35);
+  --theme-shadow:                 0 32px 84px -12px rgba(0, 0, 0, 0.85), 0 12px 32px -6px rgba(16, 185, 129, 0.16);
+  --theme-accent-primary:         #10B981;
+  --theme-accent-primary-hover:   #059669;
+  --theme-accent-secondary:       #8B5CF6;
+  --theme-accent-secondary-hover: #7C3AED;
+  --theme-accent-tertiary:        #06B6D4;
+  --theme-glow-primary:           rgba(16, 185, 129, 0.45);
+  --theme-glow-secondary:         rgba(139, 92, 246, 0.45);
+  --theme-glow-tertiary:          rgba(6, 182, 212, 0.40);
+  --theme-text-main:              #F8FAFC;
+  --theme-text-title:             #FFFFFF;
+  --theme-text-subtitle:          #A7F3D0;
+  --theme-text-muted:             rgba(226, 232, 240, 0.68);
+  --theme-transition:             background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+
+  /* Variables nativas San Valentín */
+  --bg-gradient:                  radial-gradient(130% 120% at 50% 0%, #161F33 0%, #0F172A 35%, #0B0F19 75%, #050811 100%);
+  --card-bg:                      rgba(15, 23, 42, 0.75);
+  --card-border:                  rgba(16, 185, 129, 0.24);
+  --card-shadow:                  0 32px 84px -12px rgba(0, 0, 0, 0.85), 0 12px 32px -6px rgba(16, 185, 129, 0.16), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+  --primary-accent:               #10B981;
+  --primary-hover:                #059669;
+  --secondary-accent:             #8B5CF6;
+  --wine-deep:                    #051A14;
+  --wine-velvet:                  #0F172A;
+  --champagne-gold:               #10B981;
+  --champagne-light:              #D1FAE5;
+  --rose-quartz:                  #C4B5FD;
+  --rose-quartz-light:            #EDE9FE;
+  --text-title:                   #FFFFFF;
+  --text-subtitle:                #A7F3D0;
+  --text-body:                    #F8FAFC;
+  --gold-glow:                    rgba(16, 185, 129, 0.45);
+
+  /* Variables puente Bóveda Estelar */
+  --fondo:                        #0B0F19;
+  --obsidian:                     #0B0F19;
+  --obsidian-surface:             #0F172A;
+  --amatista:                     #8B5CF6;
+  --esmeralda:                    #10B981;
+  --verde-neo:                    #10B981;
+  --dorado:                       #F59E0B;
+  --rosa:                         #8B5CF6;
+  --texto:                        #F8FAFC;
+  --glass:                        rgba(15, 23, 42, 0.72);
+  --glass-borde:                  rgba(16, 185, 129, 0.22);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TEMA 3: DEEP VELVET WINE
+   Atmósfera imperial terciopelo vino oscuro con acentos rubí y oro champaña
+   ───────────────────────────────────────────────────────────── */
+:root[data-theme="deep-velvet-wine"],
+[data-theme="deep-velvet-wine"],
+[data-theme="velvet-wine"],
+[data-theme="velvet"],
+[data-theme="wine"] {
+  /* Core Tokens Unificados */
+  --theme-id:                     'deep-velvet-wine';
+  --theme-name:                   'Deep Velvet Wine';
+  --theme-bg:                     #1A0B14;
+  --theme-bg-gradient:            radial-gradient(130% 120% at 50% 0%, #2D0F21 0%, #200D18 35%, #1A0B14 75%, #0F050B 100%);
+  --theme-surface:                rgba(38, 15, 29, 0.82);
+  --theme-surface-strong:         rgba(45, 18, 35, 0.94);
+  --theme-surface-solid:          #260F1D;
+  --theme-border:                 rgba(225, 29, 72, 0.32);
+  --theme-border-glow:            rgba(245, 158, 11, 0.38);
+  --theme-shadow:                 0 32px 84px -12px rgba(0, 0, 0, 0.85), 0 12px 32px -6px rgba(225, 29, 72, 0.22);
+  --theme-accent-primary:         #E11D48;
+  --theme-accent-primary-hover:   #BE123C;
+  --theme-accent-secondary:       #F59E0B;
+  --theme-accent-secondary-hover: #D97706;
+  --theme-accent-tertiary:        #FDA4AF;
+  --theme-glow-primary:           rgba(225, 29, 72, 0.50);
+  --theme-glow-secondary:         rgba(245, 158, 11, 0.48);
+  --theme-glow-tertiary:          rgba(253, 164, 175, 0.40);
+  --theme-text-main:              #FFE4E6;
+  --theme-text-title:             #FFF1F2;
+  --theme-text-subtitle:          #FCD34D;
+  --theme-text-muted:             rgba(255, 228, 230, 0.72);
+  --theme-transition:             background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+
+  /* Variables nativas San Valentín */
+  --bg-gradient:                  radial-gradient(130% 120% at 50% 0%, #2D0F21 0%, #200D18 35%, #1A0B14 75%, #0F050B 100%);
+  --card-bg:                      rgba(38, 15, 29, 0.82);
+  --card-border:                  rgba(225, 29, 72, 0.32);
+  --card-shadow:                  0 32px 84px -12px rgba(0, 0, 0, 0.85), 0 12px 32px -6px rgba(225, 29, 72, 0.22), inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+  --primary-accent:               #E11D48;
+  --primary-hover:                #BE123C;
+  --secondary-accent:             #F59E0B;
+  --wine-deep:                    #1A0B14;
+  --wine-velvet:                  #4C0519;
+  --champagne-gold:               #F59E0B;
+  --champagne-light:              #FEF3C7;
+  --rose-quartz:                  #FDA4AF;
+  --rose-quartz-light:            #FFE4E6;
+  --text-title:                   #FFF1F2;
+  --text-subtitle:                #FCD34D;
+  --text-body:                    #FFE4E6;
+  --gold-glow:                    rgba(245, 158, 11, 0.48);
+
+  /* Variables puente Bóveda Estelar */
+  --fondo:                        #1A0B14;
+  --obsidian:                     #1A0B14;
+  --obsidian-surface:             #260F1D;
+  --amatista:                     #E11D48;
+  --esmeralda:                    #F59E0B;
+  --verde-neo:                    #F59E0B;
+  --dorado:                       #F59E0B;
+  --rosa:                         #E11D48;
+  --texto:                        #FFE4E6;
+  --glass:                        rgba(38, 15, 29, 0.82);
+  --glass-borde:                  rgba(225, 29, 72, 0.32);
 }
 
 /* =========================================================
@@ -106,9 +238,14 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
+html, body, #root {
   width: 100%;
   min-height: 100%;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+html, body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
@@ -123,7 +260,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  transition: background 0.8s var(--spring-soft), color 0.5s ease;
+  transition: background-color 0.4s ease, color 0.4s ease, background 0.4s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -583,6 +720,7 @@ body {
 
 .glass-card {
   background: var(--card-bg);
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
@@ -601,12 +739,16 @@ body {
   width: 100%;
 }
 
-[data-theme="midnight"] .glass-card {
+[data-theme="aurora-obsidian"] .glass-card,
+[data-theme="midnight"] .glass-card,
+[data-theme="deep-velvet-wine"] .glass-card {
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: var(--card-shadow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-[data-theme="midnight"] .glass-card-strong {
+[data-theme="aurora-obsidian"] .glass-card-strong,
+[data-theme="midnight"] .glass-card-strong,
+[data-theme="deep-velvet-wine"] .glass-card-strong {
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
 }
@@ -701,7 +843,7 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #f43f5e 100%);
+  background: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 50%, var(--primary-accent) 100%);
   background-size: 200% auto;
   color: #ffffff;
   font-weight: 700;
@@ -1111,4 +1253,110 @@ button[aria-label="Cerrar"]:active {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   will-change: transform;
+}
+
+
+/* =========================================================
+   BREAK-UI & ACCESSIBILITY DEFENSIVE FORTRESS (Frank Vargas)
+   ========================================================= */
+
+/* Prevención global de desbordamiento en textos y dedicatorias */
+p, span, h1, h2, h3, h4, h5, h6, a, button, label, input, textarea {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Flex items con min-width: 0 defensivo */
+.flex > *, .inline-flex > * {
+  min-width: 0;
+}
+
+/* Estados de foco accesibles con anillo suave y specular highlight */
+:focus-visible {
+  outline: 2px solid var(--primary-accent, #f43f5e) !important;
+  outline-offset: 2px !important;
+}
+
+[data-theme="midnight"] :focus-visible {
+  outline-color: var(--primary-accent, #c084fc) !important;
+}
+
+[data-theme="golden"] :focus-visible {
+  outline-color: var(--primary-accent, #d97706) !important;
+}
+
+[data-theme="enchanted"] :focus-visible {
+  outline-color: var(--primary-accent, #059669) !important;
+}
+
+/* Blancos táctiles móviles mínimos de 44x44px según WCAG */
+button,
+.btn-primary,
+.btn-secondary,
+.quick-action-btn,
+.nav-tab,
+.wax-seal {
+  min-height: 44px;
+}
+
+.quick-action-btn {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-tab {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Anti-zoom en iOS en campos de texto */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="password"],
+  input[type="date"],
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Responsividad extrema para pantallas ultra estrechas (320px - 360px: iPhone SE) */
+@media (max-width: 360px) {
+  .container-custom {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .glass-card-strong {
+    padding: 16px 10px !important;
+    border-radius: 20px !important;
+  }
+
+  .quick-nav-bar {
+    right: 6px !important;
+    top: 8px !important;
+    gap: 4px !important;
+  }
+
+  .quick-action-btn {
+    padding: 6px 10px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .glass-pill {
+    padding: 4px 6px !important;
+  }
+
+  .nav-tab {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+  }
+
+  h1, h2 {
+    letter-spacing: normal !important;
+  }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { confetti } from '../../utils/confettiEngine';
+import { haptic } from '../../utils/haptics';
 import { useI18n } from '../../i18n/I18nContext';
 
 export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept }) {
@@ -41,6 +42,7 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
   // Evasión magnética con físicas suaves y límites seguros
   const executeDodge = useCallback((fromX, fromY) => {
     try {
+      haptic.error();
       sound.playDodge();
     } catch (err) {}
 
@@ -108,6 +110,7 @@ export default function ValentineQuestion({ recipientName = 'Luyuromo', onAccept
     e?.preventDefault?.();
     e?.stopPropagation?.();
     try {
+      haptic.success();
       sound.playGameComplete();
     } catch (err) {}
     try {

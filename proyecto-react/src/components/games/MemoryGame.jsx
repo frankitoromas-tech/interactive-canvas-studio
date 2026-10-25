@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { confetti } from '../../utils/confettiEngine';
+import { haptic } from '../../utils/haptics';
 
 const CARD_ICONS = ['💖', '🌹', '💍', '💌', '🧸', '🍫', '🎡', '✨'];
 
@@ -38,6 +39,7 @@ export default function MemoryGame() {
       return;
     }
 
+    haptic.light();
     sound.playPop();
     const newFlipped = [...flippedIndices, index];
     setFlippedIndices(newFlipped);
@@ -51,6 +53,7 @@ export default function MemoryGame() {
           const updated = [...prev, cards[first].icon];
           if (updated.length === CARD_ICONS.length) {
             setIsWon(true);
+            haptic.success();
             setTimeout(() => {
               sound.playFanfare();
               confetti.cannonCelebration();
@@ -60,6 +63,7 @@ export default function MemoryGame() {
         });
         setFlippedIndices([]);
       } else {
+        haptic.error();
         setTimeout(() => {
           setFlippedIndices([]);
         }, 900);

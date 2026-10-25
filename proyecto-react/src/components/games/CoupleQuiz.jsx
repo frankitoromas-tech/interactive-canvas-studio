@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { confetti } from '../../utils/confettiEngine';
+import { haptic } from '../../utils/haptics';
 
 const QUESTIONS = [
   {
@@ -53,6 +54,7 @@ export default function CoupleQuiz({ recipientName = 'Luyuromo' }) {
 
   const handleAnswer = (option) => {
     setSelectedOption(option.text);
+    haptic.light();
     sound.playMatchSuccess();
     setScore(s => s + 25);
 
@@ -62,6 +64,7 @@ export default function CoupleQuiz({ recipientName = 'Luyuromo' }) {
         setCurrentStep(s => s + 1);
       } else {
         setShowResult(true);
+        haptic.success();
         sound.playFanfare();
         confetti.cannonCelebration();
       }

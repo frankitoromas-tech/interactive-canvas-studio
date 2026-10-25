@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { sound } from '../../utils/soundEffects';
 import { confetti } from '../../utils/confettiEngine';
+import { haptic } from '../../utils/haptics';
 
 const DATE_IDEAS = [
   { id: 1, title: '🍕 Noche de Pizza & Películas', desc: 'Preparamos pizza casera juntos y vemos tus películas favoritas abrazados.', icon: '🍕' },
@@ -18,6 +19,7 @@ export default function DateRoulette() {
 
   const spinRoulette = () => {
     if (spinning) return;
+    haptic.medium();
     sound.playPop();
     setSpinning(true);
     setSelectedDate(null);
@@ -32,6 +34,7 @@ export default function DateRoulette() {
     setTimeout(() => {
       setSpinning(false);
       setSelectedDate(DATE_IDEAS[randomIndex]);
+      haptic.success();
       sound.playFanfare();
       confetti.cannonCelebration();
     }, 3200);

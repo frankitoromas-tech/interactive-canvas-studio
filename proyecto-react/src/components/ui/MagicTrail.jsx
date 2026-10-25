@@ -7,7 +7,7 @@ export default function MagicTrail() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    let animationFrameId = null;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -25,37 +25,6 @@ export default function MagicTrail() {
       '#ffffff', // Diamond Pure White
       '#f472b6'  // Rose Fuchsia
     ];
-
-    const addParticle = (x, y) => {
-      const count = Math.random() > 0.45 ? 2 : 1;
-      for (let i = 0; i < count; i++) {
-        const isHeart = Math.random() > 0.72;
-        const isStar = !isHeart && Math.random() > 0.4;
-        particles.push({
-          x: x + (Math.random() - 0.5) * 14,
-          y: y + (Math.random() - 0.5) * 14,
-          vx: (Math.random() - 0.5) * 1.6,
-          vy: (Math.random() - 0.8) * 1.6,
-          size: isHeart ? 9 + Math.random() * 7 : isStar ? 4 + Math.random() * 4 : 2 + Math.random() * 3.5,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: 1,
-          decay: 0.024 + Math.random() * 0.02,
-          isHeart,
-          isStar,
-          rotation: Math.random() * Math.PI * 2,
-          rotSpeed: (Math.random() - 0.5) * 0.12
-        });
-      }
-    };
-
-    const handlePointerMove = (e) => {
-      const x = e.touches ? e.touches[0].clientX : e.clientX;
-      const y = e.touches ? e.touches[0].clientY : e.clientY;
-      addParticle(x, y);
-    };
-
-    window.addEventListener('mousemove', handlePointerMove, { passive: true });
-    window.addEventListener('touchmove', handlePointerMove, { passive: true });
 
     const drawHeart = (ctx, x, y, size) => {
       ctx.save();
@@ -83,6 +52,12 @@ export default function MagicTrail() {
     };
 
     const render = () => {
+      if (particles.length === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        animationFrameId = null;
+        return; // Detiene el RAF cuando no hay partículas activas (0% CPU en reposo)
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let i = particles.length - 1; i >= 0; i--) {
@@ -125,13 +100,62 @@ export default function MagicTrail() {
       animationFrameId = requestAnimationFrame(render);
     };
 
-    render();
+    const addParticle = (x, y) => {
+      const count = Math.random() > 0.45 ? 2 : 1;
+      for (let i = 0; i < count; i++) {
+        const isHeart = Math.random() > 0.72;
+        const isStar = !isHeart && Math.random() > 0.4;
+        particles.push({
+          x: x + (Math.random() - 0.5) * 14,
+          y: y + (Math.random() - 0.5) * 14,
+          vx: (Math.random() - 0.5) * 1.6,
+          vy: (Math.random() - 0.8) * 1.6,
+          size: isHeart ? 9 + Math.random() * 7 : isStar ? 4 + Math.random() * 4 : 2 + Math.random() * 3.5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: 0.024 + Math.random() * 0.02,
+          isHeart,
+          isStar,
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.12
+        });
+      }
+
+      if (!animationFrameId && !document.hidden) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
+    const handlePointerMove = (e) => {
+      const x = e.touches ? e.touches[0].clientX : e.clientX;
+      const y = e.touches ? e.touches[0].clientY : e.clientY;
+      addParticle(x, y);
+    };
+
+    window.addEventListener('mousemove', handlePointerMove, { passive: true });
+    window.addEventListener('touchmove', handlePointerMove, { passive: true });
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        particles.length = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handlePointerMove);
       window.removeEventListener('touchmove', handlePointerMove);
-      cancelAnimationFrame(animationFrameId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
     };
   }, []);
 

@@ -40,6 +40,7 @@ import { I18nProvider, useI18n } from './i18n/I18nContext';
 // Utilidades & Seguridad
 import { getUrlParams, safeStorage, initSecurityShield } from './utils/security';
 import { sound } from './utils/soundEffects';
+import { haptic } from './utils/haptics';
 
 function AppContent() {
   const { t } = useI18n();
@@ -153,7 +154,7 @@ function AppContent() {
           <button
             type="button"
             onClick={() => {
-              try { sound.playPop(); } catch (e) {}
+              try { haptic.light(); sound.playPop(); } catch (e) {}
               setShowShare(true);
             }}
             className="quick-action-btn border-rose-300/50 text-rose-950"
@@ -166,7 +167,7 @@ function AppContent() {
           <button
             type="button"
             onClick={() => {
-              try { sound.playPop(); } catch (e) {}
+              try { haptic.light(); sound.playPop(); } catch (e) {}
               setShowCertificate(true);
             }}
             className="quick-action-btn border-amber-300/80 text-amber-950 bg-amber-50/95 hover:bg-amber-100 shadow-md"
@@ -179,7 +180,7 @@ function AppContent() {
           <button
             type="button"
             onClick={() => {
-              try { sound.playPop(); } catch (e) {}
+              try { haptic.light(); sound.playPop(); } catch (e) {}
               setShowSettings(true);
             }}
             className="quick-action-btn p-2 text-rose-950"
@@ -232,7 +233,7 @@ function AppContent() {
                     key={tab.id}
                     type="button"
                     onClick={() => {
-                      try { sound.playPop(); } catch (e) {}
+                      try { haptic.light(); sound.playPop(); } catch (e) {}
                       setActiveTab(tab.id);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}

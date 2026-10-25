@@ -11,8 +11,8 @@ export default function ThreeDHeart({ size = 280 }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let animationFrameId = null;
     let time = 0;
 
     // Generar nube de partículas 3D del corazón paramétrico con paleta Haute Couture
@@ -72,6 +72,13 @@ export default function ThreeDHeart({ size = 280 }) {
       });
     }
 
+    const totalPoints = numHeartPoints + numOrbitPoints + numRing2Points;
+    // Pool pre-alocado para evitar Garbage Collection churn (60 fps sin micro-pausas)
+    const projectedPool = new Array(totalPoints);
+    for (let i = 0; i < totalPoints; i++) {
+      projectedPool[i] = { x: 0, y: 0, z: 0, size: 0, colorHue: 0, isGold: false, alpha: 0, isOrbit: false, type: '' };
+    }
+
     const render = () => {
       time += 0.024;
 
@@ -100,94 +107,127 @@ export default function ThreeDHeart({ size = 280 }) {
       const sinX = Math.sin(rx);
       const cosY = Math.cos(ry);
       const sinY = Math.sin(ry);
+      const fov = 380;
 
-      // Proyección matemática 3D del corazón
-      const projected = heartPoints.map(p => {
-        let x1 = p.x * cosY - p.z * sinY;
-        let z1 = p.z * cosY + p.x * sinY;
-        let y1 = p.y * cosX - z1 * sinX;
-        let z2 = z1 * cosX + p.y * sinX;
-
-        const fov = 380;
+      let idx = 0;
+      // Proyección matemática 3D del corazón en pool reutilizado
+      for (let i = 0; i < numHeartPoints; i++) {
+        const p = heartPoints[i];
+        const x1 = p.x * cosY - p.z * sinY;
+        const z1 = p.z * cosY + p.x * sinY;
+        const y1 = p.y * cosX - z1 * sinX;
+        const z2 = z1 * cosX + p.y * sinX;
         const perspective = fov / (fov + z2 * scaleFactor);
 
-        return {
-          x: cx + x1 * scaleFactor * perspective,
-          y: cy + y1 * scaleFactor * perspective,
-          z: z2,
-          size: p.size * perspective * (1 + totalBeatBoost * 0.3),
-          colorHue: p.colorHue,
-          isGold: p.isGold,
-          alpha: p.alpha * perspective,
-          isOrbit: false
-        };
-      });
+        const target = projectedPool[idx++];
+        target.x = cx + x1 * scaleFactor * perspective;
+        target.y = cy + y1 * scaleFactor * perspective;
+        target.z = z2;
+        target.size = Math.max(0.7, p.size * perspective * (1 + totalBeatBoost * 0.3));
+        target.colorHue = p.colorHue;
+        target.isGold = p.isGold;
+        target.alpha = p.alpha * perspective;
+        target.isOrbit = false;
+        target.type = '';
+      }
 
       // Proyección del doble anillo orbital
-      orbitPoints.forEach(op => {
+      for (let i = 0; i < orbitPoints.length; i++) {
+        const op = orbitPoints[i];
         op.angle += op.speed;
         const ox = Math.cos(op.angle) * op.radius;
         const oz = Math.sin(op.angle) * op.radius;
         const oy = op.yOffset + Math.sin(op.angle * 2) * 1.6;
 
-        let x1 = ox * cosY - oz * sinY;
-        let z1 = oz * cosY + ox * sinY;
-        let y1 = oy * cosX - z1 * sinX;
-        let z2 = z1 * cosX + oy * sinX;
-
-        const fov = 380;
+        const x1 = ox * cosY - oz * sinY;
+        const z1 = oz * cosY + ox * sinY;
+        const y1 = oy * cosX - z1 * sinX;
+        const z2 = z1 * cosX + oy * sinX;
         const perspective = fov / (fov + z2 * scaleFactor);
 
-        projected.push({
-          x: cx + x1 * scaleFactor * perspective,
-          y: cy + y1 * scaleFactor * perspective,
-          z: z2,
-          size: op.size * perspective,
-          colorHue: op.colorHue,
-          isGold: op.type === 'gold',
-          alpha: 0.88 * perspective,
-          isOrbit: true
-        });
-      });
+        const target = projectedPool[idx++];
+        target.x = cx + x1 * scaleFactor * perspective;
+        target.y = cy + y1 * scaleFactor * perspective;
+        target.z = z2;
+        target.size = Math.max(0.7, op.size * perspective);
+        target.colorHue = op.colorHue;
+        target.isGold = op.type === 'gold';
+        target.alpha = 0.88 * perspective;
+        target.isOrbit = true;
+        target.type = op.type;
+      }
 
       // Ordenar por profundidad Z (Algoritmo del Pintor)
-      projected.sort((a, b) => a.z - b.z);
+      projectedPool.sort((a, b) => a.z - b.z);
 
-      projected.forEach(p => {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, Math.max(0.7, p.size), 0, Math.PI * 2);
-        
-        if (p.isOrbit) {
-          if (p.isGold) {
-            ctx.fillStyle = `hsla(${p.colorHue}, 100%, 75%, ${p.alpha})`;
-            ctx.shadowColor = 'rgba(251, 191, 36, 0.9)';
-            ctx.shadowBlur = 10;
-          } else {
-            ctx.fillStyle = `hsla(${p.colorHue}, 90%, 80%, ${p.alpha})`;
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
-            ctx.shadowBlur = 8;
-          }
-        } else if (p.isGold) {
-          ctx.fillStyle = `hsla(${p.colorHue}, 95%, 70%, ${p.alpha})`;
-          ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
-          ctx.shadowBlur = 9;
-        } else {
-          ctx.fillStyle = `hsla(${p.colorHue}, 92%, 62%, ${p.alpha})`;
-          ctx.shadowColor = 'rgba(225, 29, 72, 0.75)';
-          ctx.shadowBlur = 8;
+      // Renderizado de partículas optimizado en lotes
+      // Separación en 4 lotes para aplicar shadowBlur y fillStyle por lote,
+      // reduciendo miles de cambios de contexto a solo 4 llamadas atómicas.
+      ctx.save();
+      
+      // Lote 1: Corazón Rosa / Rubí
+      ctx.shadowColor = 'rgba(225, 29, 72, 0.75)';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = 'rgba(244, 63, 94, 0.78)';
+      ctx.beginPath();
+      for (let i = 0; i < totalPoints; i++) {
+        const p = projectedPool[i];
+        if (!p.isOrbit && !p.isGold) {
+          ctx.moveTo(p.x + p.size, p.y);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         }
-        
-        ctx.fill();
-        ctx.restore();
-      });
+      }
+      ctx.fill();
+
+      // Lote 2: Corazón Oro Champán
+      ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
+      ctx.shadowBlur = 9;
+      ctx.fillStyle = 'rgba(253, 230, 138, 0.85)';
+      ctx.beginPath();
+      for (let i = 0; i < totalPoints; i++) {
+        const p = projectedPool[i];
+        if (!p.isOrbit && p.isGold) {
+          ctx.moveTo(p.x + p.size, p.y);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        }
+      }
+      ctx.fill();
+
+      // Lote 3: Órbita Corona Oro
+      ctx.shadowColor = 'rgba(251, 191, 36, 0.9)';
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.9)';
+      ctx.beginPath();
+      for (let i = 0; i < totalPoints; i++) {
+        const p = projectedPool[i];
+        if (p.isOrbit && p.type === 'gold') {
+          ctx.moveTo(p.x + p.size, p.y);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        }
+      }
+      ctx.fill();
+
+      // Lote 4: Órbita Diamante Cuarzo
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.beginPath();
+      for (let i = 0; i < totalPoints; i++) {
+        const p = projectedPool[i];
+        if (p.isOrbit && p.type === 'quartz') {
+          ctx.moveTo(p.x + p.size, p.y);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        }
+      }
+      ctx.fill();
+      ctx.restore();
 
       // Halo Luminoso Central de Oro y Rosa Cuarzo
       ctx.save();
       const glowGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, 80);
-      glowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
-      glowGrad.addColorStop(0.3, 'rgba(253, 230, 138, 0.2)');
-      glowGrad.addColorStop(0.7, 'rgba(225, 29, 72, 0.12)');
+      glowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
+      glowGrad.addColorStop(0.3, 'rgba(253, 230, 138, 0.18)');
+      glowGrad.addColorStop(0.7, 'rgba(225, 29, 72, 0.10)');
       glowGrad.addColorStop(1, 'rgba(225, 29, 72, 0)');
       ctx.fillStyle = glowGrad;
       ctx.beginPath();
@@ -198,36 +238,57 @@ export default function ThreeDHeart({ size = 280 }) {
       animationFrameId = requestAnimationFrame(render);
     };
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
+
+    // Detección de pestaña activa/inactiva para ahorro 100% de CPU/GPU en segundo plano
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      } else {
+        if (!animationFrameId) {
+          animationFrameId = requestAnimationFrame(render);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
     };
   }, []);
 
   const handlePointerDown = (e) => {
     isDraggingRef.current = true;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    lastPosRef.current = { x: clientX, y: clientY };
+    try {
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    } catch (_) {}
+    lastPosRef.current = { x: e.clientX, y: e.clientY };
   };
 
   const handlePointerMove = (e) => {
     if (!isDraggingRef.current) return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const dx = clientX - lastPosRef.current.x;
-    const dy = clientY - lastPosRef.current.y;
+    const dx = e.clientX - lastPosRef.current.x;
+    const dy = e.clientY - lastPosRef.current.y;
 
     rotationRef.current.y += dx * 0.012;
     rotationRef.current.x += dy * 0.012;
     velocityRef.current = { x: dy * 0.003, y: dx * 0.003 };
 
-    lastPosRef.current = { x: clientX, y: clientY };
+    lastPosRef.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e) => {
     isDraggingRef.current = false;
+    try {
+      e.currentTarget.releasePointerCapture?.(e.pointerId);
+    } catch (_) {}
   };
 
   return (
@@ -236,13 +297,11 @@ export default function ThreeDHeart({ size = 280 }) {
         ref={canvasRef}
         width={size}
         height={size}
-        onMouseDown={handlePointerDown}
-        onMouseMove={handlePointerMove}
-        onMouseUp={handlePointerUp}
-        onTouchStart={handlePointerDown}
-        onTouchMove={handlePointerMove}
-        onTouchEnd={handlePointerUp}
-        className="cursor-grab active:cursor-grabbing transition-transform duration-300 transform hover:scale-105"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        className="cursor-grab active:cursor-grabbing transition-transform duration-300 transform hover:scale-105 touch-none"
         style={{ width: `${size}px`, height: `${size}px`, maxWidth: '85vw' }}
       />
       <span className="inline-flex items-center gap-1.5 text-xs text-rose-800/80 font-quicksand font-bold tracking-wide mt-1">
